@@ -1,10 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\FeatureRequestApiController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/feature-requests', function (Request $request) {
-            
-    return "Feature Requests ( POST ) ";
-});
-//->middleware('auth:sanctum');
+Route::get('/feature-requests', [FeatureRequestApiController::class, 'index']); // List
+
+Route::post('/feature-requests', [FeatureRequestApiController::class, 'store']); // List

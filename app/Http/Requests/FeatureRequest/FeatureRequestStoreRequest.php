@@ -14,17 +14,17 @@ class FeatureRequestStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'string',
                 'lowercase',
                 'email',
-                'max:255'                
+                'max:255',
             ],
             'description' => [
-                'required', 'min:10', 
-            ]
+                'required', 'min:10',
+            ],
         ];
     }
 }

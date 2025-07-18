@@ -1,9 +1,9 @@
 <?php
 
-namespace actions\FeatureRequest;
+namespace App\Actions\FeatureRequest;
 
+use App\Services\FeatureRequest\FeatureRequestService;
 use Illuminate\Support\Facades\Log;
-use services\FeatureRequest\FeatureRequestService;
 use Throwable;
 
 class UpdateFeatureRequestAction {
