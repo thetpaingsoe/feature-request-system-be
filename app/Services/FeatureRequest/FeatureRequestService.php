@@ -27,6 +27,7 @@ class FeatureRequestService
 
         } catch (Throwable $e) {
             Log::error('FeatureRequestService::create : '.$e->getMessage(), ['exception' => $e]);
+            throw $e;
         }
 
         return $data;

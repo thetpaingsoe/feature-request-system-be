@@ -26,7 +26,9 @@ class FeatureRequestApiController extends Controller
         } catch (Throwable $e) {
             Log::error('FeatureRequestApiController::store : '.$e->getMessage(), ['exception' => $e]);
 
-            return response()->json('Submitting error. '.$e->getMessage());
+            return response()->json([
+                'message' => 'An unexpected server error occurred. Please try again later.',
+            ], 500);
         }
 
     }
