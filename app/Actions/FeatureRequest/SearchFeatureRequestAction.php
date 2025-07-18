@@ -6,24 +6,24 @@ use App\Services\FeatureRequest\FeatureRequestService;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class SearchFeatureRequestAction 
+class SearchFeatureRequestAction
 {
     public function __construct(
         protected FeatureRequestService $featureRequest
-    )
-    {}
+    ) {}
 
-    public function handle($request) { 
-        try{
+    public function handle($request)
+    {
+        try {
 
             $this->featureRequest->updateStatus();
 
             $this->featureRequest->updateNote();
 
-        }catch(Throwable $e) {
-            Log::error('Error searching feature request: ' . $e->getMessage(), ['exception' => $e]);
+        } catch (Throwable $e) {
+            Log::error('Error searching feature request: '.$e->getMessage(), ['exception' => $e]);
             throw $e;
         }
-        
+
     }
 }

@@ -25,6 +25,7 @@ class FeatureRequestApiController extends Controller
             return response()->json($this->createFeatureRequest->handle($request), 201);
         } catch (Throwable $e) {
             Log::error('FeatureRequestApiController::store : '.$e->getMessage(), ['exception' => $e]);
+
             return response()->json('Submitting error. '.$e->getMessage());
         }
 

@@ -25,8 +25,8 @@ class FeatureRequest extends Model
         'title',
         'description',
         'email',
-        'status', 
-        'note',   
+        'status',
+        'note',
     ];
 
     /**

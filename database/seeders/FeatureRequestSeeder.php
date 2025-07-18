@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class FeatureRequestSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class FeatureRequestSeeder extends Seeder
 
         // Loop 50 times to create 50 records
         for ($i = 0; $i < 50; $i++) {
-            
+
             // Generate a random past date for submitted_at
             $submittedAt = Carbon::now()->subDays(rand(1, 365));
 
@@ -38,7 +38,7 @@ class FeatureRequestSeeder extends Seeder
             // Determine note is need or not.
             // If status is 'approved' or 'rejected', it will create some note.
             $note = '';
-            if($status === 'approved' || 'rejected') {
+            if ($status === 'approved' || 'rejected') {
                 $note = $faker->paragraph(rand(1, 3)); // 1-3 sentences for note.
             }
 
