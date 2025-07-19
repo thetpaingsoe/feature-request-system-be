@@ -1,4 +1,5 @@
-FROM php:8.2-apache
+# Base stage (common for both environments)
+FROM php:8.2-apache AS base
 
 # Set working directory
 WORKDIR /var/www/html
@@ -23,12 +24,20 @@ RUN rm -rf public/build
 # Install PHP dependencies via Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Install Node.js dependencies and build assets
-RUN npm install && npm run build
-
 # Set permissions
 RUN chown -R www-data:www-data \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
+
+FROM base AS local
+
+RUN npm install 
+
+EXPOSE 8000
+
+FROM base AS builder
+
+# Install Node.js dependencies and build assets
+RUN npm install && npm run build
 
 EXPOSE 8000
