@@ -18,6 +18,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy Laravel app
 COPY . .
 RUN rm -rf node_modules
+RUN rm -rf public/build
 
 # Install PHP dependencies via Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
