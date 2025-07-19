@@ -8,7 +8,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Feature Request Submissions',
         href: '/feature-requests',
-    },
+    }
 ];
 </script>
 
@@ -17,7 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+            <!-- <div class="grid auto-rows-min gap-4 md:grid-cols-3">
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
                 </div>
@@ -30,7 +30,7 @@ const breadcrumbs: BreadcrumbItem[] = [
             </div>
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                 <PlaceholderPattern />
-            </div>
+            </div> -->
         </div>
     </AppLayout>
 </template>
