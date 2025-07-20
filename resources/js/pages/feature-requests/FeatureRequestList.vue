@@ -82,17 +82,21 @@ const triggerInertiaVisit = (options?: { resetPageIndex?: boolean; newPageIndex?
     const sortBy = sorting.value.length > 0 ? sorting.value[0].id : null;
     const sortDirection = sorting.value.length > 0 ? (sorting.value[0].desc ? 'desc' : 'asc') : null;
     
-    router.get(route('feature-requests.index'),
-    {
-        search: globalFilter.value,
-        status: selectedStatus.value === 'All' ? null : selectedStatus.value,
-        date_start: dateFilterStart.value || null,
-        date_end: dateFilterEnd.value || null,
-        page : pagination.value.pageIndex,
+    const params: Record<string, any> = {
+        page: pagination.value.pageIndex , // Page and per_page are always sent
         per_page: pagination.value.pageSize,
-        sort_by: sortBy,         
-        sort_direction: sortDirection, 
-    },
+    };
+
+    if (globalFilter.value) params.search = globalFilter.value;
+    if (selectedStatus.value !== 'All') params.status = selectedStatus.value;
+    if (dateFilterStart.value) params.date_start = dateFilterStart.value;
+    if (dateFilterEnd.value) params.date_end = dateFilterEnd.value;
+    if (sortBy) { 
+        params.sort_by = sortBy;
+        params.sort_direction = sortDirection;
+    }
+
+    router.get(route('feature-requests.index'), params,
     {
         preserveState: true,
         preserveScroll: true,
