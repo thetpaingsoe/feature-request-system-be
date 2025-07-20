@@ -14,10 +14,12 @@ class FeatureRequestService
             $query = FeatureRequest::query();
 
             return $query->when($filters['search'] ?? null, function ($query, $search) {
-                $query->where('title', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%')
-                    ->orWhere('id', $search); // Assuming ID can be searched directly
-            })
+                    $query->where(function($q) use ($search) {
+                        $q->where('title', 'like', '%'.$search.'%')
+                        ->orWhere('email', 'like', '%'.$search.'%')
+                        ->orWhere('id', $search);
+                    });
+                })
                 ->when($filters['status'] ?? null, function ($query, $status) {
                     $query->where('status', $status);
                 })

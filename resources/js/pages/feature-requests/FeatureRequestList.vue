@@ -21,6 +21,7 @@ import {
     FeatureRequestPagination, 
     InertiaFilters, InertiaSorting 
 } from '@/types/feature-request';
+import { FilterIcon } from 'lucide-vue-next';
 
 // --- Breadcumb ---
 const breadcrumbs: BreadcrumbItem[] = [
@@ -92,6 +93,11 @@ const triggerInertiaVisit = (options?: { resetPageIndex?: boolean; newPageIndex?
     }
 )};
 
+// -- Filter Sections --
+const filterSection = ref(false);
+function toggleFilterSection() {
+    filterSection.value = !filterSection.value;
+}
 
 // --- Keyword Search ---
 watch(
@@ -103,20 +109,12 @@ watch(
 
 // --- Sorting ---
 watch(sorting, (newSorting) => {
-    console.log("sorting");
-    console.log(newSorting);
-    triggerInertiaVisit({ resetPageIndex: true });  
+    triggerInertiaVisit({ resetPageIndex: true });
 }, { deep: true }); 
 
-// @todo --- Status ----
-const statusFilterFn: FilterFn<FeatureRequest> = (row, columnId, filterValue: string) => {
-  if (!filterValue || filterValue === 'All') {
-    return true;
-  }
-  return row.getValue(columnId) === filterValue;
-};
-watch(selectedStatus, (newValue: string) => {
-  table.getColumn('status')?.setFilterValue(newValue);
+// --- Status ----
+watch(selectedStatus, (_: string) => {
+    triggerInertiaVisit({ resetPageIndex: true });
 });
 
 // @todo --- Date Range ----
@@ -182,7 +180,6 @@ const columns = [
       return h('span', { class: `px-2 py-1 rounded-full text-xs font-semibold ${colorClass}` }, status);
     },
     enableSorting: true,
-    filterFn: statusFilterFn, // Use custom status filter
   }),
   columnHelper.accessor('submitted_at', {
     header: 'Submitted At',
@@ -246,35 +243,52 @@ const table = useVueTable<FeatureRequest>({
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto ">
         
             <!-- Filters Section -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                 
                 <!-- Keyword Search -->         
                 <div>
                     <label for="global-search" class="block text-sm font-medium text-gray-700 mb-1">Keyword Search</label>
-                    <input
-                        id="global-search"
-                        type="text"
-                        v-model="globalFilter"
-                        placeholder="Search title, email, ID..."
-                        class="w-full px-4 py-2 border dark:border-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition duration-150 ease-in-out"
-                    />
+                    <div class="flex flex-row">
+                        <input
+                            id="global-search"
+                            type="text"
+                            v-model="globalFilter"
+                            placeholder="Search title, email, ID..."
+                            class="w-full px-4 py-2 border dark:border-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition duration-150 ease-in-out"
+                        />
+                        <button
+                            @click="toggleFilterSection()"
+                            class=" ms-2 px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-400 dark:text-white bg-white  dark:bg-gray-800 dark:border-gray-900 hover:bg-gray-50 hover:dark:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <component :is="FilterIcon" class="w-4 h-4" />
+                        </button>
+                    </div>
                 </div>
 
+                <div>
+                    
+                    
+                </div>
+                
+
+                </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2 border border-dotted px-3 py-2 rounded-lg" v-if="filterSection">
                 <!-- Status Filter -->
-                <!-- <div>
-                <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
-                <select
-                    id="status-filter"
-                    v-model="selectedStatus"
-                    class="w-full px-4 py-2 border border-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                >
-                    <option value="All">All Statuses</option>
-                    <option value="Pending">pending</option>
-                    <option value="Approved">approved</option>
-                    <option value="Rejected">rejected</option>
-                    <option value="In Progress">reviewed</option>
-                </select>
-                </div> -->
+                <div>
+                    <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
+                    <select
+                        id="status-filter"
+                        v-model="selectedStatus"
+                        class="w-full px-4 py-2 dark:text-gray-200 border border-gray-300 dark:border-gray-800 rounded-md focus:ring-gray-500 focus:border-gray-500 transition duration-150 ease-in-out focus:outline-none"
+                    >
+                        <option value="All">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="reviewed">reviewed</option>
+                    </select>
+                </div>
 
                 <!-- Date Range Filter -->
                 <!-- <div class="flex flex-col sm:flex-row gap-2">
@@ -297,10 +311,11 @@ const table = useVueTable<FeatureRequest>({
                         />
                     </div>
                 </div> -->
+            
             </div>
 
             <!-- Table Container -->
-            <div class="overflow-x-auto rounded-lg border dark:border-gray-900">
+            <div class="overflow-x-auto rounded-lg border dark:border-gray-900 mt-2">
                 <table class="min-w-full divide-y dark:divide-gray-900">
                     <thead class="">
                         <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
