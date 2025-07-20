@@ -7,6 +7,8 @@ export type FeatureRequest = {
   email: string;
   status: 'pending' | 'approved' | 'rejected' | 'reviewed';
   submitted_at: string;
+  note: string,
+  description : string 
 }
 
 // Interface for the full Inertia paginated response for Feature Requests

@@ -152,7 +152,9 @@ function dateFilterCleared() {
 
 // @todo --- Action Handlers ---
 const handleEdit = (id: number): void => {
-  alert(`Editing feature request with ID: ${id}`);
+    console.log("Edit")
+    console.log(id)
+  router.get(route('feature-requests.edit', { id: id }));
 };
 const handleDelete = (id: number): void => {
   if (confirm(`Are you sure you want to delete feature request with ID: ${id}?`)) {
@@ -282,7 +284,7 @@ const table = useVueTable<FeatureRequest>({
                             type="text"
                             v-model="globalFilter"
                             placeholder="Search title, email, ID..."
-                            class="w-full px-4 py-2 border dark:border-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition duration-150 ease-in-out"
+                            class="w-full px-4 py-2 border dark:border-gray-800 rounded-md focus:outline-none transition duration-150 ease-in-out"
                         />
                         <button
                             @click="toggleFilterSection()"
@@ -292,14 +294,7 @@ const table = useVueTable<FeatureRequest>({
                         </button>
                     </div>
                 </div>
-
-                <div>
-                    
-                    
-                </div>
-                
-
-                </div>
+            </div>
             
             <Transition
                 enter-active-class="transition-all duration-300 ease-out"
@@ -316,7 +311,7 @@ const table = useVueTable<FeatureRequest>({
                         <select
                             id="status-filter"
                             v-model="selectedStatus"
-                            class="w-full px-4 py-2 dark:text-gray-200 border border-gray-300 dark:border-gray-800 rounded-md focus:ring-gray-500 focus:border-gray-500 transition duration-150 ease-in-out focus:outline-none"
+                            class="w-full px-4 py-2 dark:text-gray-200 border border-gray-200 dark:border-gray-800 rounded-md focus:ring-gray-500 focus:border-gray-500 transition duration-150 ease-in-out focus:outline-none"
                         >
                             <option value="All">All Statuses</option>
                             <option value="pending">Pending</option>

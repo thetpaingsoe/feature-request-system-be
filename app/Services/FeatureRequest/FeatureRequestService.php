@@ -2,6 +2,7 @@
 
 namespace App\Services\FeatureRequest;
 
+use App\Enums\FeatureRequestStatus;
 use App\Models\FeatureRequest;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -12,7 +13,7 @@ class FeatureRequestService
     {
         try {
             $query = FeatureRequest::query();
-// dd($sorting);
+
             return $query->when($filters['search'] ?? null, function ($query, $search) {
                     $query->where(function($q) use ($search) {
                         $q->where('title', 'like', '%'.$search.'%')
@@ -77,9 +78,45 @@ class FeatureRequestService
         return $data;
     }
 
-    public function updateStatus() {}
+    public function updateStatus(FeatureRequest $featureRequest, string $newStatus): FeatureRequest
+    {
+        try {
+            // Optional: Validate the status against your enum
+            if (!in_array($newStatus, FeatureRequestStatus::toArray())) {
+                throw new \InvalidArgumentException("Invalid status provided: {$newStatus}");
+            }
 
-    public function updateNote() {}
+            $featureRequest->update([
+                'status' => $newStatus,
+            ]);
+
+            // $featureRequest->refresh(); // Refresh to ensure latest data
+
+            return $featureRequest;
+
+        } catch (Throwable $e) {
+            Log::error('FeatureRequestService::updateStatus: ' . $e->getMessage(), ['exception' => $e]);
+            throw $e;
+        }
+    }
+
+    public function updateNote(FeatureRequest $featureRequest, ?string $newNote): FeatureRequest
+    {
+        try {
+            $featureRequest->update([
+                'note' => $newNote,
+            ]);
+
+            // $featureRequest->refresh(); // Refresh to ensure latest data
+
+            return $featureRequest;
+
+        } catch (Throwable $e) {
+            Log::error('FeatureRequestService::updateNote: ' . $e->getMessage(), ['exception' => $e]);
+            throw $e;
+        }
+    }
+
 
     /* ?? */
     public function delete() {}

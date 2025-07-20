@@ -38,7 +38,7 @@ class FeatureRequestSeeder extends Seeder
             // Determine note is need or not.
             // If status is 'approved' or 'rejected', it will create some note.
             $note = '';
-            if ($status === 'approved' || 'rejected') {
+            if ($status === 'approved' || $status === 'rejected') {
                 $note = $faker->paragraph(rand(1, 3)); // 1-3 sentences for note.
             }
 

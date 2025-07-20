@@ -12,11 +12,11 @@ class GetFeatureRequestAction
         protected FeatureRequestService $featureRequest
     ) {}
 
-    public function handle($request)
+    public function handle($id)
     {
         try {
 
-            $this->featureRequest->get(1);
+            return $this->featureRequest->get($id);
 
         } catch (Throwable $e) {
             Log::error('Error getting feature request: '.$e->getMessage(), ['exception' => $e]);
