@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router, usePage} from '@inertiajs/vue3';
+import { Head, router, useForm, usePage} from '@inertiajs/vue3';
 import { ref, computed, h, watch, onMounted } from 'vue';
 import Label from '@/components/ui/label/Label.vue';
 import { useDebounceFn } from '@vueuse/core';
 import { formatDate } from '@/lib/date-utils';
+import { FilterIcon } from 'lucide-vue-next';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 import {
     useVueTable,
@@ -21,9 +24,19 @@ import {
     FeatureRequestPagination, 
     InertiaFilters, InertiaSorting 
 } from '@/types/feature-request';
-import { FilterIcon } from 'lucide-vue-next';
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
+
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+
+
 
 // --- Breadcumb ---
 const breadcrumbs: BreadcrumbItem[] = [
@@ -156,12 +169,51 @@ const handleEdit = (id: number): void => {
     console.log(id)
   router.get(route('feature-requests.edit', { id: id }));
 };
-const handleDelete = (id: number): void => {
-  if (confirm(`Are you sure you want to delete feature request with ID: ${id}?`)) {
-    alert(`Feature request with ID: ${id} deleted.`);
-  }
-};
 
+const isDeleteDialogOpen = ref(false);
+const featureRequestNameToDelete = ref<string>('');
+
+const form = useForm({
+    id: 0,
+});
+const handleDelete = (e: Event) => {
+    e.preventDefault();
+
+    const sortBy = sorting.value.length > 0 ? sorting.value[0].id : null;
+    const sortDirection = sorting.value.length > 0 ? (sorting.value[0].desc ? 'desc' : 'asc') : null;
+    
+    const params: Record<string, any> = {
+        page: pagination.value.pageIndex , // Page and per_page are always sent
+        per_page: pagination.value.pageSize,
+    };
+
+    if (globalFilter.value) params.search = globalFilter.value;
+    if (selectedStatus.value !== 'All') params.status = selectedStatus.value;
+    if (dateFilterStart.value) params.date_start = dateFilterStart.value;
+    if (dateFilterEnd.value) params.date_end = dateFilterEnd.value;
+    if (sortBy) { 
+        params.sort_by = sortBy;
+        params.sort_direction = sortDirection;
+    }
+
+    form.delete(route('feature-requests.destroy', { id: form.id, ...params }), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+        onError: () => {
+            isDeleteDialogOpen.value = false;
+            alert("Error on delete.");            
+        },
+        onFinish: () => { 
+            form.reset();
+            isDeleteDialogOpen.value = false;
+        }
+    });
+};
+const closeModal = () => {
+    form.clearErrors();
+    form.reset();
+    isDeleteDialogOpen.value = false;
+};
 
 // --- Column Helper For Table ---
 const columnHelper = createColumnHelper<FeatureRequest>();
@@ -229,7 +281,13 @@ const columns = [
         }, 'Edit'),
         h('button', {
           class: 'px-3 py-1 bg-red-500 dark:bg-red-800 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-900 transition duration-150 ease-in-out text-sm',
-          onClick: () => handleDelete(item.id),
+          onClick: () => {
+            
+            featureRequestNameToDelete.value = item.title; 
+            form.id = item.id
+            
+            isDeleteDialogOpen.value = true; 
+          },
         }, 'Delete'),
       ]);
     },
@@ -478,6 +536,28 @@ const table = useVueTable<FeatureRequest>({
                 </div>
             </div>
 
+            <!-- Delete Confirmation Dialog -->
+             <Dialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
+                <DialogContent>
+                    <form class="space-y-6" @submit="handleDelete">
+                        <DialogHeader class="space-y-3">
+                            <DialogTitle class=" text-lg/8">Are you sure you want to delete <br />"{{ featureRequestNameToDelete }}"?</DialogTitle>
+                            <DialogDescription>
+                                Once your account is deleted, all of its resources and data will also be permanently deleted. 
+                            </DialogDescription>
+                        </DialogHeader>
+
+
+                        <DialogFooter class="gap-2">
+                            <DialogClose as-child>
+                                <Button variant="secondary" @click="closeModal"> Cancel </Button>
+                            </DialogClose>
+
+                            <Button type="submit" variant="destructive" :disabled="form.processing"> Delete Request </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     </AppLayout>
 </template>

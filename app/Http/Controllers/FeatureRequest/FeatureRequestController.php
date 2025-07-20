@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\FeatureRequest;
 
+use App\Actions\FeatureRequest\DeleteFeatureRequestAction;
 use App\Actions\FeatureRequest\GetFeatureRequestAction;
 use App\Actions\FeatureRequest\SearchFeatureRequestAction;
 use App\Actions\FeatureRequest\UpdateFeatureRequestAction;
@@ -10,6 +11,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FeatureRequest\FeatureRequestUpdateRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class FeatureRequestController extends Controller
 {
@@ -17,6 +20,7 @@ class FeatureRequestController extends Controller
         protected SearchFeatureRequestAction $searchFeatureRequestAction,
         protected GetFeatureRequestAction $getFeatureRequestAction,
         protected UpdateFeatureRequestAction $updateFeatureRequestAction,
+        protected DeleteFeatureRequestAction $deleteFeatureRequestAction,
     ) {}
 
     /**
@@ -51,5 +55,20 @@ class FeatureRequestController extends Controller
         $this->updateFeatureRequestAction->handle($id, $request);
 
         return redirect()->route('feature-requests.index')->with('success', 'Feature request updated successfully.');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        try {
+            $this->deleteFeatureRequestAction->handle($id, $request); 
+
+            $currentQueryParams = $request->query();
+            
+            return redirect()->route('feature-requests.index', $currentQueryParams)
+                             ->with('success', 'Feature request deleted successfully!');
+        } catch (Throwable $e) {
+            Log::error('Error deleting feature request: '.$e->getMessage(), ['exception' => $e]);
+            return back()->withErrors(['delete' => 'Failed to delete feature request.']);
+        }
     }
 }

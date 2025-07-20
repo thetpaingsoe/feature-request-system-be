@@ -117,7 +117,12 @@ class FeatureRequestService
         }
     }
 
-
-    /* ?? */
-    public function delete() {}
+    public function delete(FeatureRequest $featureRequest): bool {
+        try {
+            return $featureRequest->delete();
+        } catch (Throwable $e) {
+            Log::error('FeatureRequestService::delete: ' . $e->getMessage(), ['exception' => $e]);
+            throw $e;
+        }
+    }
 }
