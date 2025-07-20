@@ -543,7 +543,7 @@ const table = useVueTable<FeatureRequest>({
                         <DialogHeader class="space-y-3">
                             <DialogTitle class=" text-lg/8">Are you sure you want to delete <br />"{{ featureRequestNameToDelete }}"?</DialogTitle>
                             <DialogDescription>
-                                Once your account is deleted, all of its resources and data will also be permanently deleted. 
+                                Once after deleted the feature request, you can't able to do the recovery.
                             </DialogDescription>
                         </DialogHeader>
 
