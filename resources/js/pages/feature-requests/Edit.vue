@@ -17,8 +17,7 @@ const props = defineProps<{
 }>();
 
 const featureRequest = computed(() => props.featureRequest );
-const titleRef = ref('Title');
-console.log(featureRequest.value.title);
+const processing = ref(false);
 
 // --- Reactive State for Editable Fields ---
 const currentStatus = ref<string>(props.featureRequest ? props.featureRequest.status : '');
@@ -31,7 +30,7 @@ const defaultAvailableStatuses = [
   'rejected',
   'reviewed'
 ];
-console.log(currentStatus);
+
 const statuses = computed(() =>  props.statuses ?? defaultAvailableStatuses);
 
 // --- Breadcrumbs ---
@@ -48,23 +47,26 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 // --- Form Submission Logic ---
 const handleSubmit = () => {
-  router.put(
-    route('feature-requests.update', { id: props.featureRequest.id }),
-    {
-      status: currentStatus.value,
-      note: currentNote.value,      
-    },
-    {
-      preserveScroll: true,
-      onSuccess: () => {
-        alert('Feature request updated successfully!'); 
-      },
-      onError: (errors) => {
-        console.error('Error updating feature request:', errors);
-        alert('Failed to update feature request. Check console for details.'); // Replace with proper error display
-      },
-    }
-  );
+    processing.value = true;
+    router.put(
+        route('feature-requests.update', { id: props.featureRequest.id }),
+        {
+            status: currentStatus.value,
+            note: currentNote.value,      
+        },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                // processing.value = false;
+                alert('Feature request updated successfully!'); 
+            },
+            onError: (errors) => {
+                // processing.value = false;
+                console.error('Error updating feature request:', errors);
+                alert('Failed to update feature request. Check console for details.'); // Replace with proper error display
+            },
+        }
+    );
 };
 
 // --- Cancel Logic ---
@@ -170,8 +172,8 @@ const handleCancel = () => {
                         >
                             Cancel
                         </Button>
-                        <Button type="submit" class="w-fit" tabindex="5" >
-                            <!-- <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" /> :disabled="form.processing"-->
+                        <Button type="submit" class=" w-48" tabindex="5" :disabled="processing">
+                            <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
                             Update
                         </Button>
                         

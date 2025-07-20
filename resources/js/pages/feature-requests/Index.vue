@@ -224,11 +224,11 @@ const columns = [
       const item = row.original; // Get the original data object for the row
       return h('div', { class: 'flex space-x-2' }, [
         h('button', {
-          class: 'px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150 ease-in-out text-sm',
+          class: 'px-3 py-1 bg-blue-500 dark:bg-blue-800 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-900 transition duration-150 ease-in-out text-sm',
           onClick: () => handleEdit(item.id),
         }, 'Edit'),
         h('button', {
-          class: 'px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-150 ease-in-out text-sm',
+          class: 'px-3 py-1 bg-red-500 dark:bg-red-800 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-900 transition duration-150 ease-in-out text-sm',
           onClick: () => handleDelete(item.id),
         }, 'Delete'),
       ]);
