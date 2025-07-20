@@ -12,7 +12,7 @@ class FeatureRequestService
     {
         try {
             $query = FeatureRequest::query();
-
+// dd($sorting);
             return $query->when($filters['search'] ?? null, function ($query, $search) {
                     $query->where(function($q) use ($search) {
                         $q->where('title', 'like', '%'.$search.'%')
@@ -28,18 +28,15 @@ class FeatureRequestService
                 })
                 ->when($filters['date_end'] ?? null, function ($query, $dateEnd) {
                     // Add 23:59:59 to include the whole end day
-                    $query->where('submitted_at', '<=', $dateEnd.' 23:59:59');
+                    $query->where('submitted_at', '<=', $dateEnd);//.' 23:59:59');
                 })
-                ->when($sorting['sort_by'] ?? null, function ($query, $sortBy) {
-                    $sortDirection = $sorting['sort_direction'] ?? 'asc'; // Default to asc
-                    // Ensure the column exists and is safe to sort by
-                    $allowedSortColumns = ['id', 'title', 'email', 'status', 'submitted_at'];
-                    if (in_array($sortBy, $allowedSortColumns)) {
-                        $query->orderBy($sortBy, $sortDirection);
+                ->when(isset($sorting['sort_by'], $sorting['sort_direction']), function ($query) use ($sorting) {
+                    if (in_array($sorting['sort_by'], ['id', 'title', 'email', 'status', 'submitted_at'])) {
+                        $query->orderBy($sorting['sort_by'], $sorting['sort_direction']);
+                    }else {
+                        $query->orderBy('id', 'desc');
                     }
                 })
-                // Default sorting if no sort_by is provided
-                ->orderBy('id', 'desc') // Or any default sorting you prefer
                 ->paginate($perPage, ['*'], 'page', $page)
                 ->withQueryString();
 

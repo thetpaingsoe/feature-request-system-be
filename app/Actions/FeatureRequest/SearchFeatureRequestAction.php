@@ -24,7 +24,7 @@ class SearchFeatureRequestAction
             $featureRequests = $this->featureRequest->search($filters, $sorting, $page, $perPage);
 
             $rtnData = [
-                'featureRequestsPagnication' => $featureRequests,
+                'featureRequestsPagination' => $featureRequests,
                 'filters' => $filters,
                 'sorting' => $sorting,
             ];

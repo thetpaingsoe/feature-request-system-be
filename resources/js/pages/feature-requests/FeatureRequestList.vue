@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage} from '@inertiajs/vue3';
-import { ref, computed, h, watch } from 'vue';
+import { ref, computed, h, watch, onMounted } from 'vue';
 import Label from '@/components/ui/label/Label.vue';
 import { useDebounceFn } from '@vueuse/core';
 import { formatDate } from '@/lib/date-utils';
@@ -22,6 +22,8 @@ import {
     InertiaFilters, InertiaSorting 
 } from '@/types/feature-request';
 import { FilterIcon } from 'lucide-vue-next';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 // --- Breadcumb ---
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,31 +38,37 @@ const pageSizes: number[] = [10, 20, 50, 100];
 
 // --- Handling Props ---
 const props = defineProps<{
-  featureRequestsPagnication: FeatureRequestPagination; 
+  featureRequestsPagination: FeatureRequestPagination; 
   filters: InertiaFilters; 
   sorting: InertiaSorting; 
 }>();
 
-const featureRequestsPagnication = computed(() => props.featureRequestsPagnication );
-const featureRequests = ref<FeatureRequest[]>(props.featureRequestsPagnication.data); // Use the 'data' array from the pagination prop
+const featureRequestsPagination = computed(() => props.featureRequestsPagination ?? []);
+const featureRequests = ref<FeatureRequest[]>(props.featureRequestsPagination ? props.featureRequestsPagination.data : []); // Use the 'data' array from the pagination prop
 
 // --- Table State ---
 const filterTypeData = props.filters ?? ref<any[]>([]);
 const sorting = ref<any[]>([]);
 const globalFilter = ref<string>(filterTypeData.search || '');
-const selectedStatus = ref<string>('All');
+const selectedStatus = ref<string>(filterTypeData.status || 'All');
 const dateFilterStart = ref<string>('');
 const dateFilterEnd = ref<string>('');
+const dateFilter = ref([props.filters.date_start || '', props.filters.date_end || '']);
+const isDark = ref(false)
+
+onMounted(() => {
+    isDark.value = document.documentElement.classList.contains('dark')
+})
 
 const pagination = ref({
-    pageIndex: featureRequestsPagnication.value.current_page - 1, // Initialize from props (0-indexed)
-    pageSize: featureRequestsPagnication.value.per_page, // Initialize from props
+    pageIndex: featureRequestsPagination.value.current_page - 1, // Initialize from props (0-indexed)
+    pageSize: featureRequestsPagination.value.per_page, // Initialize from props
 });
 
 // --- Update table data when there is changes ---
-watch(() => featureRequestsPagnication.value, (newFeatureRequestsData) => {    
-  featureRequests.value = newFeatureRequestsData.data;
-  pagination.value.pageIndex = newFeatureRequestsData.current_page;
+watch(() => props.featureRequestsPagination, (newFeatureRequestsData) => {        
+  featureRequests.value = newFeatureRequestsData ? newFeatureRequestsData.data : [];
+  pagination.value.pageIndex = newFeatureRequestsData ? newFeatureRequestsData.current_page : 1;
 }, { deep: true, immediate: true }); 
  
 // --- Intertia Request ---
@@ -89,7 +97,7 @@ const triggerInertiaVisit = (options?: { resetPageIndex?: boolean; newPageIndex?
         preserveState: true,
         preserveScroll: true,
         replace: true,
-        only: ['featureRequestsPagnication', 'filters', 'sorting'],
+        only: ['featureRequestsPagination', 'filters', 'sorting'],
     }
 )};
 
@@ -117,10 +125,26 @@ watch(selectedStatus, (_: string) => {
     triggerInertiaVisit({ resetPageIndex: true });
 });
 
-// @todo --- Date Range ----
-watch([dateFilterStart, dateFilterEnd], ([newStart, newEnd]) => {
-    //   table.getColumn('submitted_at')?.setFilterValue({ start: newStart, end: newEnd } as DateRangeFilterValue);
+// --- Date Range ----
+watch(dateFilter, (_) => {
+    if (dateFilter != null && dateFilter.value.length > 1) {
+        const tempStartDate = new Date(dateFilter.value[0]); 
+        tempStartDate.setHours(0, 0, 0, 0); 
+        dateFilterStart.value = tempStartDate.toISOString();
+
+        const tempEndDate = new Date(dateFilter.value[1]);
+        tempEndDate.setHours(23, 59, 59, 999); 
+        dateFilterEnd.value = tempEndDate.toISOString();        
+
+        triggerInertiaVisit({ resetPageIndex: true });
+    }
 });
+function dateFilterCleared() {
+    dateFilter.value = [];
+    dateFilterStart.value = "";
+    dateFilterEnd.value = "";
+    triggerInertiaVisit({ resetPageIndex: true });
+}
 
 // @todo --- Action Handlers ---
 const handleEdit = (id: number): void => {
@@ -273,47 +297,41 @@ const table = useVueTable<FeatureRequest>({
 
                 </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2 border border-dotted px-3 py-2 rounded-lg" v-if="filterSection">
-                <!-- Status Filter -->
-                <div>
-                    <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
-                    <select
-                        id="status-filter"
-                        v-model="selectedStatus"
-                        class="w-full px-4 py-2 dark:text-gray-200 border border-gray-300 dark:border-gray-800 rounded-md focus:ring-gray-500 focus:border-gray-500 transition duration-150 ease-in-out focus:outline-none"
-                    >
-                        <option value="All">All Statuses</option>
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="reviewed">reviewed</option>
-                    </select>
+            <Transition
+                enter-active-class="transition-all duration-300 ease-out"
+                enter-from-class="opacity-0 max-h-0"
+                enter-to-class="opacity-100 max-h-[500px]"
+                leave-active-class="transition-all duration-200 ease-in"
+                leave-from-class="opacity-100 max-h-[500px]"
+                leave-to-class="opacity-0 max-h-0"
+            >
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2 border border-dotted px-3 py-2 rounded-lg" v-if="filterSection">
+                    <!-- Status Filter -->
+                    <div>
+                        <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
+                        <select
+                            id="status-filter"
+                            v-model="selectedStatus"
+                            class="w-full px-4 py-2 dark:text-gray-200 border border-gray-300 dark:border-gray-800 rounded-md focus:ring-gray-500 focus:border-gray-500 transition duration-150 ease-in-out focus:outline-none"
+                        >
+                            <option value="All">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="reviewed">reviewed</option>
+                        </select>
+                    </div>
+
+                    <!-- Date Range Filter -->
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <div class="flex-1">
+                            <label for="date-range" class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                            <VueDatePicker for="date-range" v-model="dateFilter" range :dark="isDark" :enable-time-picker="false" @cleared="dateFilterCleared" :clearable="true"/>
+                        </div>                        
+                    </div>
+                
                 </div>
-
-                <!-- Date Range Filter -->
-                <!-- <div class="flex flex-col sm:flex-row gap-2">
-                    <div class="flex-1">
-                        <label for="date-start" class="block text-sm font-medium text-gray-700 mb-1">Date Start</label>
-                        <input
-                        id="date-start"
-                        type="date"
-                        v-model="dateFilterStart"
-                        class="w-full px-4 py-2 border border-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                        />
-                    </div>
-                    <div class="flex-1">
-                        <label for="date-end" class="block text-sm font-medium text-gray-700 mb-1">Date End</label>
-                        <input
-                        id="date-end"
-                        type="date"
-                        v-model="dateFilterEnd"
-                        class="w-full px-4 py-2 border border-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                        />
-                    </div>
-                </div> -->
-            
-            </div>
-
+            </Transition>
             <!-- Table Container -->
             <div class="overflow-x-auto rounded-lg border dark:border-gray-900 mt-2">
                 <table class="min-w-full divide-y dark:divide-gray-900">
@@ -405,28 +423,28 @@ const table = useVueTable<FeatureRequest>({
                 <div class="flex items-center space-x-2">
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: 1 })"
-                        :disabled="featureRequestsPagnication.current_page === 1"
+                        :disabled="featureRequestsPagination.current_page === 1"
                         class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         First
                     </button>
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex - 1 })"
-                        :disabled="featureRequestsPagnication.current_page === 1"
+                        :disabled="featureRequestsPagination.current_page === 1"
                         class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Previous
                     </button>
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex + 1 })"
-                        :disabled="featureRequestsPagnication.current_page === featureRequestsPagnication.last_page"             
+                        :disabled="featureRequestsPagination.current_page === featureRequestsPagination.last_page"             
                         class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Next
                     </button>
                     <button
-                        @click="triggerInertiaVisit({ newPageIndex: featureRequestsPagnication.last_page })"
-                        :disabled="featureRequestsPagnication.current_page === featureRequestsPagnication.last_page"
+                        @click="triggerInertiaVisit({ newPageIndex: featureRequestsPagination.last_page })"
+                        :disabled="featureRequestsPagination.current_page === featureRequestsPagination.last_page"
                         class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white border-gray-300  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Last
@@ -436,7 +454,7 @@ const table = useVueTable<FeatureRequest>({
                 <div class="flex items-center space-x-2 text-sm text-gray-700">
                     <span>Page</span>
                     <strong>
-                        {{ featureRequestsPagnication.current_page }} of {{ featureRequestsPagnication.last_page }}
+                        {{ featureRequestsPagination.current_page }} of {{ featureRequestsPagination.last_page }}
                     </strong>
                 </div>
 
@@ -446,7 +464,7 @@ const table = useVueTable<FeatureRequest>({
                         type="number"
                         :value=" pagination.pageIndex "                        
                         @change="e => {
-                            const newPage = Math.max(1, Math.min(featureRequestsPagnication.last_page, Number((e.target as HTMLInputElement).value)));
+                            const newPage = Math.max(1, Math.min(featureRequestsPagination.last_page, Number((e.target as HTMLInputElement).value)));
                             triggerInertiaVisit({ newPageIndex: newPage });
                         }"
                         class="w-20 px-3 py-1 border border-gray-300 dark:border-gray-800 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
@@ -464,3 +482,12 @@ const table = useVueTable<FeatureRequest>({
         </div>
     </AppLayout>
 </template>
+
+<style>
+.dp__theme_dark {
+    --dp-background-color: hsl(0 0% 3.9%);
+    --dp-border-color: #1e2939;
+    --dp-border-color-hover: #1e2939;
+    --dp-border-color-focus: #1e2939;
+}
+</style>
