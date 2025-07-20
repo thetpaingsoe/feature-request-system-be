@@ -165,19 +165,19 @@ const columns = [
       let colorClass = '';
       switch (status) {
         case 'pending':
-          colorClass = 'text-blue-600 bg-blue-100';
+          colorClass = 'text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-200';
           break;
         case 'approved':
-          colorClass = 'text-green-600 bg-green-100';
+          colorClass = 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-200';
           break;
         case 'rejected':
-          colorClass = 'text-red-600 bg-red-100';
+          colorClass = 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-200';
           break;
         case 'reviewed':
-          colorClass = 'text-purple-600 bg-purple-100';
+          colorClass = 'text-purple-600 bg-purple-100 dark:bg-purple-900 dark:text-purple-200';
           break;
         default:
-          colorClass = 'text-gray-600 bg-gray-100';
+          colorClass = 'text-gray-600 bg-gray-100 dark:bg-gary-900 dark:text-gray-200';
       }
       return h('span', { class: `px-2 py-1 rounded-full text-xs font-semibold ${colorClass}` }, status);
     },
@@ -243,7 +243,7 @@ const table = useVueTable<FeatureRequest>({
     <Head title="Feature Requests" />
     
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto ">
         
             <!-- Filters Section -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -256,7 +256,7 @@ const table = useVueTable<FeatureRequest>({
                         type="text"
                         v-model="globalFilter"
                         placeholder="Search title, email, ID..."
-                        class="w-full px-4 py-2 border dark:border-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                        class="w-full px-4 py-2 border dark:border-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition duration-150 ease-in-out"
                     />
                 </div>
 
@@ -391,28 +391,28 @@ const table = useVueTable<FeatureRequest>({
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: 1 })"
                         :disabled="featureRequestsPagnication.current_page === 1"
-                        class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         First
                     </button>
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex - 1 })"
                         :disabled="featureRequestsPagnication.current_page === 1"
-                        class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Previous
                     </button>
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex + 1 })"
                         :disabled="featureRequestsPagnication.current_page === featureRequestsPagnication.last_page"             
-                        class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Next
                     </button>
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: featureRequestsPagnication.last_page })"
                         :disabled="featureRequestsPagnication.current_page === featureRequestsPagnication.last_page"
-                        class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white border-gray-300  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Last
                     </button>
@@ -434,12 +434,12 @@ const table = useVueTable<FeatureRequest>({
                             const newPage = Math.max(1, Math.min(featureRequestsPagnication.last_page, Number((e.target as HTMLInputElement).value)));
                             triggerInertiaVisit({ newPageIndex: newPage });
                         }"
-                        class="w-20 px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                        class="w-20 px-3 py-1 border border-gray-300 dark:border-gray-800 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
                     />
                     <select
                         v-model="pagination.pageSize"
                         @change="triggerInertiaVisit({ resetPageIndex: true })"
-                        class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                        class="px-3 py-1 border border-gray-300 dark:border-gray-800 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
                     >
                         <option v-for="size in pageSizes" :key="size" :value="size">Show {{ size }}</option>
                     </select>
