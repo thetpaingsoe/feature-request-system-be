@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router, useForm, usePage} from '@inertiajs/vue3';
+import { Head, router, useForm} from '@inertiajs/vue3';
 import { ref, computed, h, watch, onMounted } from 'vue';
 import Label from '@/components/ui/label/Label.vue';
 import { useDebounceFn } from '@vueuse/core';
@@ -15,7 +15,6 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     FlexRender,
-    FilterFn,
     createColumnHelper,
 } from '@tanstack/vue-table';
 
@@ -33,7 +32,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
@@ -62,7 +60,7 @@ const featureRequests = ref<FeatureRequest[]>(props.featureRequestsPagination ? 
 
 // --- Table State ---
 const filterTypeData = props.filters ?? ref<any[]>([]);
-const sorting = ref<any[]>([]);
+const sortingRef = ref<any[]>([]);
 const globalFilter = ref<string>(filterTypeData.search || '');
 const selectedStatus = ref<string>(filterTypeData.status || 'All');
 const dateFilterStart = ref<string>('');
@@ -93,8 +91,8 @@ const triggerInertiaVisit = (options?: { resetPageIndex?: boolean; newPageIndex?
         pagination.value.pageIndex = options.newPageIndex; // Set to a specific new page index
     }
 
-    const sortBy = sorting.value.length > 0 ? sorting.value[0].id : null;
-    const sortDirection = sorting.value.length > 0 ? (sorting.value[0].desc ? 'desc' : 'asc') : null;
+    const sortBy = sortingRef.value.length > 0 ? sortingRef.value[0].id : null;
+    const sortDirection = sortingRef.value.length > 0 ? (sortingRef.value[0].desc ? 'desc' : 'asc') : null;
     
     const params: Record<string, any> = {
         page: pagination.value.pageIndex , // Page and per_page are always sent
@@ -128,24 +126,24 @@ function toggleFilterSection() {
 // --- Keyword Search ---
 watch(
     globalFilter,
-    useDebounceFn((_) => {
+    useDebounceFn(() => {
         triggerInertiaVisit({ resetPageIndex: true })    
     }, 500)
 )
 
 // --- Sorting ---
-watch(sorting, (newSorting) => {
+watch(sortingRef, () => {
     triggerInertiaVisit({ resetPageIndex: true });
 }, { deep: true }); 
 
 // --- Status ----
-watch(selectedStatus, (_: string) => {
+watch(selectedStatus, () => {
     triggerInertiaVisit({ resetPageIndex: true });
 });
 
 // --- Date Range ----
-watch(dateFilter, (_) => {
-    if (dateFilter != null && dateFilter.value.length > 1) {
+watch(dateFilter, () => {
+    if (dateFilter.value != null && dateFilter.value.length > 1) {
         const tempStartDate = new Date(dateFilter.value[0]); 
         tempStartDate.setHours(0, 0, 0, 0); 
         dateFilterStart.value = tempStartDate.toISOString();
@@ -180,8 +178,8 @@ const form = useForm({
 const handleDelete = (e: Event) => {
     e.preventDefault();
 
-    const sortBy = sorting.value.length > 0 ? sorting.value[0].id : null;
-    const sortDirection = sorting.value.length > 0 ? (sorting.value[0].desc ? 'desc' : 'asc') : null;
+    const sortBy = sortingRef.value.length > 0 ? sortingRef.value[0].id : null;
+    const sortDirection = sortingRef.value.length > 0 ? (sortingRef.value[0].desc ? 'desc' : 'asc') : null;
     
     const params: Record<string, any> = {
         page: pagination.value.pageIndex , // Page and per_page are always sent
@@ -303,11 +301,11 @@ const table = useVueTable<FeatureRequest>({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(), 
     manualPagination: true,
-    state: { get sorting() { return sorting.value; },
+    state: { get sorting() { return sortingRef.value; },
   },
   onSortingChange: updaterOrValue => {
-    sorting.value = typeof updaterOrValue === 'function'
-      ? updaterOrValue(sorting.value)
+    sortingRef.value = typeof updaterOrValue === 'function'
+      ? updaterOrValue(sortingRef.value)
       : updaterOrValue
   },
   onGlobalFilterChange: updaterOrValue => {

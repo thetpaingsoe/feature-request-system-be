@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ToastNotificationData } from '@/types/toast-types';
 import {
-    ToastAction,
     ToastDescription,
     ToastRoot,
     ToastTitle,
@@ -39,14 +38,14 @@ onUnmounted(() => {
 });
 
 // Helper to determine toast variant based on type
-const getVariant = (type: string) => {
-  switch (type) {
-    case 'success': return 'default';
-    case 'error': return 'destructive';
-    case 'info': return 'default';
-    default: return 'default';
-  }
-};
+// const getVariant = (type: string) => {
+//   switch (type) {
+//     case 'success': return 'default';
+//     case 'error': return 'destructive';
+//     case 'info': return 'default';
+//     default: return 'default';
+//   }
+// };
 
 // Helper to get title based on type
 const getTitle = (title: string, type: string) => {
