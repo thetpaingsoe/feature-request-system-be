@@ -90,8 +90,6 @@ class FeatureRequestService
                 'status' => $newStatus,
             ]);
 
-            // $featureRequest->refresh(); // Refresh to ensure latest data
-
             return $featureRequest;
 
         } catch (Throwable $e) {
@@ -106,8 +104,6 @@ class FeatureRequestService
             $featureRequest->update([
                 'note' => $newNote,
             ]);
-
-            // $featureRequest->refresh(); // Refresh to ensure latest data
 
             return $featureRequest;
 
