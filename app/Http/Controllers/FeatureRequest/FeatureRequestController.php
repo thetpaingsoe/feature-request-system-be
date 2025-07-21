@@ -10,8 +10,9 @@ use App\Enums\FeatureRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FeatureRequest\FeatureRequestUpdateRequest;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
 use Throwable;
 
 class FeatureRequestController extends Controller
@@ -30,6 +31,12 @@ class FeatureRequestController extends Controller
     {
         $rtnData = $this->searchFeatureRequestAction->handle($request);
 
+        $flashedToastData = Session::get('toast');
+        if ($flashedToastData) {
+            $rtnData['flash'] = $flashedToastData;
+            // dd($rtnData);
+        }
+
         return Inertia::render('feature-requests/Index', $rtnData);
 
     }
@@ -40,10 +47,10 @@ class FeatureRequestController extends Controller
     public function edit($id)
     {
         $featureRequest = $this->getFeatureRequestAction->handle($id);
-        
+
         return Inertia::render('feature-requests/Edit', [
             'featureRequest' => $featureRequest,
-            'statuses' => FeatureRequestStatus::toArray()
+            'statuses' => FeatureRequestStatus::toArray(),
         ]);
     }
 
@@ -54,20 +61,32 @@ class FeatureRequestController extends Controller
     {
         $this->updateFeatureRequestAction->handle($id, $request);
 
-        return redirect()->route('feature-requests.index')->with('success', 'Feature request updated successfully.');
+        return redirect()->route('feature-requests.index')
+            ->with('toast', [
+                'title' => 'Updated !',
+                'type' => 'success',
+                'message' => 'Feature request has been updated successfully!',
+            ]
+            );
     }
 
     public function destroy(Request $request, $id)
     {
         try {
-            $this->deleteFeatureRequestAction->handle($id, $request); 
+            $this->deleteFeatureRequestAction->handle($id, $request);
 
             $currentQueryParams = $request->query();
-            
+
             return redirect()->route('feature-requests.index', $currentQueryParams)
-                             ->with('success', 'Feature request deleted successfully!');
+                ->with('toast', [
+                    'title' => 'Deleted !',
+                    'type' => 'success',
+                    'message' => 'Feature request deleted successfully!',
+                ]
+                );
         } catch (Throwable $e) {
             Log::error('Error deleting feature request: '.$e->getMessage(), ['exception' => $e]);
+
             return back()->withErrors(['delete' => 'Failed to delete feature request.']);
         }
     }

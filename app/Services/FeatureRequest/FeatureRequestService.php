@@ -15,12 +15,12 @@ class FeatureRequestService
             $query = FeatureRequest::query();
 
             return $query->when($filters['search'] ?? null, function ($query, $search) {
-                    $query->where(function($q) use ($search) {
-                        $q->where('title', 'like', '%'.$search.'%')
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', '%'.$search.'%')
                         ->orWhere('email', 'like', '%'.$search.'%')
                         ->orWhere('id', $search);
-                    });
-                })
+                });
+            })
                 ->when($filters['status'] ?? null, function ($query, $status) {
                     $query->where('status', $status);
                 })
@@ -29,12 +29,12 @@ class FeatureRequestService
                 })
                 ->when($filters['date_end'] ?? null, function ($query, $dateEnd) {
                     // Add 23:59:59 to include the whole end day
-                    $query->where('submitted_at', '<=', $dateEnd);//.' 23:59:59');
+                    $query->where('submitted_at', '<=', $dateEnd); // .' 23:59:59');
                 })
                 ->when(isset($sorting['sort_by'], $sorting['sort_direction']), function ($query) use ($sorting) {
                     if (in_array($sorting['sort_by'], ['id', 'title', 'email', 'status', 'submitted_at'])) {
                         $query->orderBy($sorting['sort_by'], $sorting['sort_direction']);
-                    }else {
+                    } else {
                         $query->orderBy('id', 'desc');
                     }
                 })
@@ -82,7 +82,7 @@ class FeatureRequestService
     {
         try {
             // Optional: Validate the status against your enum
-            if (!in_array($newStatus, FeatureRequestStatus::toArray())) {
+            if (! in_array($newStatus, FeatureRequestStatus::toArray())) {
                 throw new \InvalidArgumentException("Invalid status provided: {$newStatus}");
             }
 
@@ -95,7 +95,7 @@ class FeatureRequestService
             return $featureRequest;
 
         } catch (Throwable $e) {
-            Log::error('FeatureRequestService::updateStatus: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('FeatureRequestService::updateStatus: '.$e->getMessage(), ['exception' => $e]);
             throw $e;
         }
     }
@@ -112,16 +112,17 @@ class FeatureRequestService
             return $featureRequest;
 
         } catch (Throwable $e) {
-            Log::error('FeatureRequestService::updateNote: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('FeatureRequestService::updateNote: '.$e->getMessage(), ['exception' => $e]);
             throw $e;
         }
     }
 
-    public function delete(FeatureRequest $featureRequest): bool {
+    public function delete(FeatureRequest $featureRequest): bool
+    {
         try {
             return $featureRequest->delete();
         } catch (Throwable $e) {
-            Log::error('FeatureRequestService::delete: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('FeatureRequestService::delete: '.$e->getMessage(), ['exception' => $e]);
             throw $e;
         }
     }

@@ -15,7 +15,7 @@ class FeatureRequestUpdateRequest extends FormRequest
     {
         return [
             'status' => [],
-            'note' => []
+            'note' => [],
         ];
     }
 }

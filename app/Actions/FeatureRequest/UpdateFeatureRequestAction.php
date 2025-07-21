@@ -23,7 +23,7 @@ class UpdateFeatureRequestAction
             $data = $request->validated();
 
             $featureRequest = $this->featureRequestService->get($id);
-            
+
             $featureRequest = $this->featureRequestService->updateStatus($featureRequest, $data['status']);
             $featureRequest = $this->featureRequestService->updateNote($featureRequest, $data['note']);
 
@@ -36,7 +36,6 @@ class UpdateFeatureRequestAction
             Log::error('Error updating feature request: '.$e->getMessage(), ['exception' => $e]);
             throw $e;
         }
-
 
     }
 }

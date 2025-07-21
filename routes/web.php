@@ -16,7 +16,7 @@ Route::prefix('feature-requests')->name('feature-requests.')->group(function () 
     Route::get('/', [FeatureRequestController::class, 'index'])->name('index');
     Route::get('/{id}/edit', [FeatureRequestController::class, 'edit'])->name('edit');
     Route::put('/{id}', [FeatureRequestController::class, 'update'])->name('update');
-    Route::delete('/{id}', [FeatureRequestController::class, 'destroy'])->name('destroy'); 
+    Route::delete('/{id}', [FeatureRequestController::class, 'destroy'])->name('destroy');
 
 });
 

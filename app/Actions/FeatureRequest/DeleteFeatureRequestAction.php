@@ -22,7 +22,7 @@ class DeleteFeatureRequestAction
 
             $featureRequest = $this->featureRequestService->get($id);
 
-            $featureRequest = $this->featureRequestService->delete($featureRequest);            
+            $featureRequest = $this->featureRequestService->delete($featureRequest);
 
             DB::commit();
 
@@ -33,7 +33,6 @@ class DeleteFeatureRequestAction
             Log::error('Error delete feature request: '.$e->getMessage(), ['exception' => $e]);
             throw $e;
         }
-
 
     }
 }

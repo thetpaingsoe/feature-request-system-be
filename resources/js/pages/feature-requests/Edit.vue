@@ -58,12 +58,12 @@ const handleSubmit = () => {
             preserveScroll: true,
             onSuccess: () => {
                 // processing.value = false;
-                alert('Feature request updated successfully!'); 
+                // alert('Feature request updated successfully!'); 
             },
             onError: (errors) => {
                 // processing.value = false;
                 console.error('Error updating feature request:', errors);
-                alert('Failed to update feature request. Check console for details.'); // Replace with proper error display
+                // alert('Failed to update feature request. Check console for details.'); // Replace with proper error display
             },
         }
     );

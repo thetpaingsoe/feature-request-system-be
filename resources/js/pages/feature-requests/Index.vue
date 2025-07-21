@@ -35,6 +35,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 
 
@@ -201,7 +202,7 @@ const handleDelete = (e: Event) => {
         onSuccess: () => closeModal(),
         onError: () => {
             isDeleteDialogOpen.value = false;
-            alert("Error on delete.");            
+            // alert("Error on delete.");            
         },
         onFinish: () => { 
             form.reset();
