@@ -82,7 +82,7 @@ class SearchFeatureRequestActionTest extends TestCase
             50, // total items
             $expectedPerPage,
             $expectedPage,
-            ['path' => '/api/feature-requests/search']
+            ['path' => '/feature-requests']
         );
 
         // Expect the 'search' method on the mocked service to be called once
@@ -119,7 +119,7 @@ class SearchFeatureRequestActionTest extends TestCase
     {
         // Arrange
         $mockRequestData = []; // No specific filters or sorting
-        $mockRequest = Request::create('/api/feature-requests/search', 'GET', $mockRequestData);
+        $mockRequest = Request::create('/feature-requests', 'GET', $mockRequestData);
 
         $expectedFilters = []; // No filters
         $expectedSorting = []; // No sorting
@@ -135,7 +135,7 @@ class SearchFeatureRequestActionTest extends TestCase
             10, // total items
             $expectedPerPage,
             $expectedPage,
-            ['path' => '/api/feature-requests/search']
+            ['path' => '/feature-requests']
         );
 
         $this->featureRequestServiceMock
@@ -166,7 +166,7 @@ class SearchFeatureRequestActionTest extends TestCase
     {
         // Arrange
         $mockRequestData = ['search' => 'error_case'];
-        $mockRequest = Request::create('/api/feature-requests/search', 'GET', $mockRequestData);
+        $mockRequest = Request::create('/feature-requests', 'GET', $mockRequestData);
 
         $exceptionMessage = 'Database connection failed during search.';
         $mockException = new \Exception($exceptionMessage);
