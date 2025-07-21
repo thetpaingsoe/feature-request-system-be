@@ -55,7 +55,7 @@ const getTitle = (title: string, type: string) => {
     switch (type) {
         case 'success': return 'Success!';
         case 'error': return 'Error!';
-        case 'error': return 'Warning!';
+        case 'warning': return 'Warning!';
         case 'info': return 'Info!';
         default: return 'Notification';
     }
