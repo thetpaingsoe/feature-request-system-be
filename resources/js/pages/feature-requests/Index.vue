@@ -113,7 +113,7 @@ const triggerInertiaVisit = (options?: { resetPageIndex?: boolean; newPageIndex?
         preserveState: true,
         preserveScroll: true,
         replace: true,
-        only: ['featureRequestsPagination', 'filters', 'sorting'],
+        only: ['featureRequestsPagination', 'filters', 'sorting', 'flash'],
     }
 )};
 

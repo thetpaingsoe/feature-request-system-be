@@ -1,9 +1,13 @@
 import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { loadEnv } from 'vite';
 
-export default defineConfig({
+
+export default ({ mode }) => {
+    const env = loadEnv(mode, process.cwd());    
+    return ({
+    base: env.APP_ENV == 'production' ? '/public/build/' : '',
     plugins: [
         laravel({
             input: ['resources/js/app.ts'],
@@ -20,4 +24,5 @@ export default defineConfig({
             },
         }),
     ],
-});
+    });
+};

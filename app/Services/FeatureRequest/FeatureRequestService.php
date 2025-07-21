@@ -34,10 +34,9 @@ class FeatureRequestService
                 ->when(isset($sorting['sort_by'], $sorting['sort_direction']), function ($query) use ($sorting) {
                     if (in_array($sorting['sort_by'], ['id', 'title', 'email', 'status', 'submitted_at'])) {
                         $query->orderBy($sorting['sort_by'], $sorting['sort_direction']);
-                    } else {
-                        $query->orderBy('id', 'desc');
                     }
                 })
+                ->orderBy('id', 'desc')
                 ->paginate($perPage, ['*'], 'page', $page)
                 ->withQueryString();
 

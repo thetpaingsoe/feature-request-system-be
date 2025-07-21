@@ -31,10 +31,9 @@ class FeatureRequestController extends Controller
     {
         $rtnData = $this->searchFeatureRequestAction->handle($request);
 
-        $flashedToastData = Session::get('toast');
+        $flashedToastData = Session::pull('toast');
         if ($flashedToastData) {
             $rtnData['flash'] = $flashedToastData;
-            // dd($rtnData);
         }
 
         return Inertia::render('feature-requests/Index', $rtnData);
