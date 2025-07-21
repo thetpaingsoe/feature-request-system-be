@@ -9,7 +9,7 @@ use Inertia\Inertia;
 // })->middleware(['auth', 'verified'])->name('home');
 
 Route::get('/', [FeatureRequestController::class, 'index'])
-    ->middleware(['auth', 'verified']) 
+    ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
 // Route::get('dashboard', function () {

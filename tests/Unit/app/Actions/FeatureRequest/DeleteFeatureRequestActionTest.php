@@ -2,19 +2,20 @@
 
 namespace Tests\Unit\Actions\FeatureRequest;
 
-use Tests\TestCase;
 use App\Actions\FeatureRequest\DeleteFeatureRequestAction;
+use App\Models\FeatureRequest;
 use App\Services\FeatureRequest\FeatureRequestService;
-use App\Models\FeatureRequest; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
-use Mockery; 
+use Tests\TestCase;
 use Throwable;
 
 class DeleteFeatureRequestActionTest extends TestCase
 {
     protected $featureRequestServiceMock;
+
     protected $deleteFeatureRequestAction;
 
     protected function setUp(): void
@@ -42,12 +43,12 @@ class DeleteFeatureRequestActionTest extends TestCase
         parent::tearDown();
     }
 
-    #[Test] 
+    #[Test]
     public function it_deletes_a_feature_request_successfully()
     {
         // Arrange
         $featureRequestId = 1;
-        $mockRequest = (object) ['id' => 1]; 
+        $mockRequest = (object) ['id' => 1];
         $mockFeatureRequest = new FeatureRequest(['id' => $featureRequestId, 'title' => 'Test Feature']);
 
         // Expect calls on the mocked service
@@ -79,7 +80,7 @@ class DeleteFeatureRequestActionTest extends TestCase
         $this->assertTrue($result); // Assuming delete returns true, or check the returned model if it returns that
     }
 
-    #[Test] 
+    #[Test]
     public function it_rolls_back_and_logs_on_exception()
     {
         // Arrange
@@ -120,7 +121,7 @@ class DeleteFeatureRequestActionTest extends TestCase
         $this->deleteFeatureRequestAction->handle($featureRequestId, $mockRequest);
     }
 
-    #[Test] 
+    #[Test]
     public function it_rolls_back_and_logs_if_delete_fails()
     {
         // Arrange
