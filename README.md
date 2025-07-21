@@ -38,7 +38,7 @@ This will create the necessary tables, including users and feature_requests.
 - **Run Database Seeding**  
 This will populate your users table with a default admin user and your feature_requests table with 50 dummy records.
 
-        `php artisan db:seed`
+        php artisan db:seed
 
     **Default Admin Credentials:**  
     Email: admin@gmail.com  
