@@ -15,6 +15,7 @@ class SubmissionUpdateStatusRequest extends FormRequest
     {
         return [
             'status' => ['required', 'string'],
+            'note' => [],
         ];
     }
 }

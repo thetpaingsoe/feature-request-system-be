@@ -256,6 +256,7 @@ const columns = [
         case 'pending':
           colorClass = 'text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-200';
           break;
+
         case 'approved':
           colorClass = 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-200';
           break;
@@ -264,6 +265,9 @@ const columns = [
           break;
         case 'reviewing':
           colorClass = 'text-purple-600 bg-purple-100 dark:bg-purple-900 dark:text-purple-200';
+          break;
+        case 'feedback':
+          colorClass = 'text-blue-600 bg-amber-100 dark:bg-amber-900 dark:text-amber-200';
           break;
         default:
           colorClass = 'text-gray-600 bg-gray-100 dark:bg-gary-900 dark:text-gray-200';

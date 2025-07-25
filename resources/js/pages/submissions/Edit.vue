@@ -13,6 +13,7 @@ import { LoaderCircle } from 'lucide-vue-next';
 import RHeadingSmall from '@/components/RHeadingSmall.vue';
 import { SubmissionLog, SubmissionLogPagination } from '@/types/submission-logs';
 import SubmissionLogUI from '@/components/SubmissionLogUI.vue';
+import TextArea from '@/components/ui/textarea/TextArea.vue';
 
 // --- Props ---
 const props = defineProps<{
@@ -37,8 +38,8 @@ const submission = computed(() => props.submission );
 const processing = ref(false);
 
 // --- Reactive State for Editable Fields ---
-// const currentStatus = ref<string>(props.submission ? props.submission.status : '');
-// const currentNote = ref<string>(props.submission? props.submission.note : '');
+const currentStatus = ref<string>(props.submission ? props.submission.status : '');
+const currentNote = ref<string>('');
 
 // --- Available Statuses (Fallback if not passed as prop) ---
 // const defaultAvailableStatuses = [
@@ -79,13 +80,18 @@ const triggerInertiaVisit = (currentPage: number ) => {
 )};
 
 // --- Form Submission Logic ---
-const handleSubmit = () => {
+const handleStatusChange = (options?: { status?: string}) => {
     processing.value = true;
+    // console.log(forceStatus);
+    if(options?.status) {
+        currentStatus.value = options?.status;
+    }
+
     router.put(
         route('submissions.update-status', { id: props.submission.id }),
         {
-            status: "reviewing"//currentStatus.value,
-            // note: currentNote.value,      
+            status: currentStatus.value,
+            note: currentNote.value,      
         },
         {
             preserveScroll: true,
@@ -214,16 +220,43 @@ onMounted(() => {
                             <div class="flex flex-col items-center justify-center" v-if="submission.status == 'pending'">
                                 <p class="text-sm text-muted-foreground mt-12"> Are you ready to start review this submission ? </p>        
 
-                                <Button type="submit" class=" w-48 mt-4 " tabindex="5" :disabled="processing" @click="handleSubmit">
+                                <Button type="submit" class=" w-48 mt-4 " tabindex="5" :disabled="processing" @click="handleStatusChange({status : 'reviewing'})">
                                     <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
                                     Start Review
                                 </Button>
                             </div>
 
-                            <div class="flex flex-col items-center justify-center" v-else-if="submission.status == 'reviewing'">
-                                <p class="text-sm text-muted-foreground mt-12"> Are you ready to start review this submission ? </p>        
+                            <div class="flex flex-col items-center justify-center mx-2" v-else-if="submission.status == 'reviewing' || submission.status == 'feedback'">
+                                
+                                <div class="w-full">
+                                    <hr class="mt-4 mb-4"/>
+                                    <Label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</Label>
+                                    <select
+                                        id="status"
+                                        v-model="currentStatus"
+                                        class=" text-sm font-medium dark:bg-primary-foreground w-full px-4 py-2 dark:text-gray-200 border rounded-md focus:ring-gray-500 focus:border-gray-500 transition duration-150 ease-in-out focus:outline-none"
+                                    >
+                                        <option v-for="statusOption in statuses" :key="statusOption" :value="statusOption">
+                                            {{ statusOption }}
+                                        </option>
+                                    </select>
+                                </div>
 
-                                You are Reviewing....
+                                <div class="w-full" v-if="currentStatus == 'feedback'">
+                                    <Label for="note" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 mt-2">What is your feedback ? </Label>
+                                    
+                                    <TextArea
+                                        id="note"   
+                                        v-model="currentNote"                                     
+                                        placeholder="Please write here ..."
+                                        class="w-full h-[200px] bg-transparent"
+                                    ></TextArea>
+                                </div>
+
+                                <Button type="ghost" variant="outline" class=" w-full mt-4 " tabindex="5" :disabled="processing" @click="handleStatusChange">
+                                    <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
+                                    Submit
+                                </Button>
                                 
                             </div>
                         </div>

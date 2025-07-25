@@ -46,7 +46,22 @@ class UpdateSubmissionStatusAction
                 'data' => $data,
             ];
 
-            $this->submissionLogService->create($log);
+            if ($data['from'] != $data['to']) {
+                $this->submissionLogService->create($log);
+            }
+
+            if (isset($validatedData['note'])) {
+                $data = [
+                    'message' => $validatedData['note'],
+                    'user_id' => $userId,
+                ];
+                $log = (object) [
+                    'submission_id' => $id,
+                    'type' => SubmissionLogTypes::SuggestionMessage,
+                    'data' => $data,
+                ];
+                $this->submissionLogService->create($log);
+            }
 
             DB::commit();
 
