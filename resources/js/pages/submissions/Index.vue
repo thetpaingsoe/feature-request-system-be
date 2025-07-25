@@ -165,7 +165,12 @@ function dateFilterCleared() {
 const handleEdit = (id: number): void => {
     console.log("Edit")
     console.log(id)
-  router.get(route('submissions.edit', { id: id }));
+    const params: Record<string, any> = {
+        // page: 0,
+        // per_page: 10,
+    };
+
+  router.get(route('submissions.edit', { id: id, ...params }));
 };
 
 const isDeleteDialogOpen = ref(false);

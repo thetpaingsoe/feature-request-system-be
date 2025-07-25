@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\SubmissionLog;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
 class SubmissionLogSeeder extends Seeder
@@ -16,7 +16,7 @@ class SubmissionLogSeeder extends Seeder
         SubmissionLog::create([
             'submission_id' => 1,
             'type' => 'create',
-            'data' => ['user-id' => '1'],
+            'data' => ['user_id' => '2'],
             'created_at' => $now,
             'updated_at' => $now,
         ]);
@@ -24,7 +24,7 @@ class SubmissionLogSeeder extends Seeder
         SubmissionLog::create([
             'submission_id' => 1,
             'type' => 'update',
-            'data' => ['user-id' => '1'],
+            'data' => ['user_id' => '2'],
             'created_at' => $now->copy()->addMinutes(5),
             'updated_at' => $now->copy()->addMinutes(5),
         ]);
@@ -34,7 +34,7 @@ class SubmissionLogSeeder extends Seeder
             SubmissionLog::create([
                 'submission_id' => $id,
                 'type' => 'create',
-                'data' => ['user-id' => '1'],
+                'data' => ['user_id' => '2'],
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);

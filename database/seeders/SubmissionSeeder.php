@@ -15,9 +15,9 @@ class SubmissionSeeder extends Seeder
     {
         // Create a user if not exists
         $user = User::firstOrCreate(
-            ['email' => 'user@example.com'],
+            ['email' => 'user1@example.com'],
             [
-                'name' => 'Test User',
+                'name' => 'User1',
                 'password' => bcrypt('password'), // You can change this
             ]
         );

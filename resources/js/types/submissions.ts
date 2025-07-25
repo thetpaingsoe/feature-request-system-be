@@ -77,7 +77,6 @@ export type Submission = {
   updated_at: string;
 };
 
-
 // Interface for the full Inertia paginated response for Submissions
 export interface SubmissionPagination {
   data: Submission[];

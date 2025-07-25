@@ -6,6 +6,7 @@ use App\Actions\Submission\DeleteSubmissionAction;
 use App\Actions\Submission\GetSubmissionAction;
 use App\Actions\Submission\SearchSubmissionAction;
 use App\Actions\Submission\UpdateSubmissionAction;
+use App\Actions\SubmissionLog\SearchSubmissionLogAction;
 use App\Enums\SubmissionStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Submission\SubmissionUpdateRequest;
@@ -22,6 +23,7 @@ class SubmissionController extends Controller
         protected GetSubmissionAction $getSubmissionAction,
         protected UpdateSubmissionAction $updateSubmissionAction,
         protected DeleteSubmissionAction $deleteSubmissionAction,
+        protected SearchSubmissionLogAction $searchSubmissionLogAction
     ) {}
 
     /**
@@ -43,14 +45,20 @@ class SubmissionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $submission = $this->getSubmissionAction->handle($id);
 
-        return Inertia::render('submissions/Edit', [
+        $submissionLogPagination = $this->searchSubmissionLogAction->handle($request, $id);
+
+        $rtnData = [
             'submission' => $submission,
             'statuses' => SubmissionStatus::toArray(),
-        ]);
+
+        ];
+        $rtnData = array_merge($rtnData, $submissionLogPagination);
+
+        return Inertia::render('submissions/Edit', $rtnData);
     }
 
     /**

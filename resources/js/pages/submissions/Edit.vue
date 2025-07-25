@@ -11,12 +11,26 @@ import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 // import HeadingSmall from '@/components/HeadingSmall.vue';
 import RHeadingSmall from '@/components/RHeadingSmall.vue';
+import { SubmissionLog, SubmissionLogPagination } from '@/types/submission-logs';
+import SubmissionLogUI from '@/components/SubmissionLogUI.vue';
 
 // --- Props ---
 const props = defineProps<{
-  submission: Submission;  
-  statuses: Array<string>;
+    submission: Submission;  
+    statuses: Array<string>;
+    submissionLogsPagination : SubmissionLogPagination;
+  
 }>();
+
+console.log(props.submissionLogsPagination);
+// const submissionLogsPagination = computed(() => props.submissionLogsPagination ?? []);
+const submissionLogs = ref<SubmissionLog[]>(props.submissionLogsPagination ? props.submissionLogsPagination.data : []); 
+console.log(submissionLogs.value.reverse());
+
+computed(() => {
+  // Create a shallow copy of the array before reversing to avoid mutating the original
+  return [...submissionLogs.value].reverse();
+});
 
 const submission = computed(() => props.submission );
 const processing = ref(false);
@@ -132,38 +146,46 @@ onMounted(() => {
                             <hr class="mt-4"/>
                             <RHeadingSmall 
                                 title="Shareholders" 
-                                :description="submission.shareholders?.map(j => `${j.name ?? ''}, ${j.name ?? ''}, , ${j.percentage ?? ''}%`).join('\n') ?? ''" 
+                                :description="submission.shareholders?.map(j => `${j.name ?? '-'}\n ${j.email ?? '-'}\n ${j.percentage ?? '-'}%`).join('\n\n') ?? ''" 
                                 class="mt-4"
                                 style="white-space: pre-wrap;"
                             />
+                            <hr class="mt-4"/>
                             <RHeadingSmall 
                                 title="Beneficial Owner" 
-                                :description="submission.beneficial_owners?.map(j => `${j.name ?? ''}, ${j.relationship ?? ''}`).join('\n') ?? ''" 
+                                :description="submission.beneficial_owners?.map(j => `${j.name ?? '-'}\n${j.relationship ?? '-'}`).join('\n\n') ?? ''" 
                                 class="mt-4"
                                 style="white-space: pre-wrap;"
                             />
+                            <hr class="mt-4"/>
                             <RHeadingSmall 
                                 title="Directors" 
-                                :description="submission.directors?.map(j => `${j.name ?? ''}, ${j.email ?? ''}, ${j.position ?? ''}`).join('\n') ?? ''" 
+                                :description="submission.directors?.map(j => `${j.name ?? '-'}\n${j.email ?? '-'}\n${j.position ?? '-'}`).join('\n\n') ?? ''" 
                                 class="mt-4"
                                 style="white-space: pre-wrap;"
                             />                    
-                            <div class="mt-40" />
+                            <div class="mt-20" />
                         </div>
                     </div>
                 </div>
 
                 <!-- Column 2 -->
-                <div ref="col2Ref" class="md:w-1/3 md:overflow-y-auto p-4 border border-dashed border-gray-800 rounded">
+                <div ref="col2Ref" class="md:w-1/3 md:overflow-y-auto p-4 border border-dashed border-gray-400 dark:border-gray-800 rounded">
                     <div class="space-y-4">
-                        <div class="w-full flex flex-col items-center justify-center">
+                        <div class="w-full ">
 
-                            <p class="text-sm text-muted-foreground mt-12"> Are you ready to start review this submission ? </p>        
+                            <div class="w-full" v-for="s in submissionLogs " :key="s.id">
+                                <SubmissionLogUI :submission-log="s" />
+                            </div>
 
-                            <Button type="submit" class=" w-48 mt-4 " tabindex="5" :disabled="processing">
-                                <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
-                                Start Review
-                            </Button>
+                            <div class="flex flex-col items-center justify-center">
+                                <p class="text-sm text-muted-foreground mt-12"> Are you ready to start review this submission ? </p>        
+
+                                <Button type="submit" class=" w-48 mt-4 " tabindex="5" :disabled="processing">
+                                    <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
+                                    Start Review
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
