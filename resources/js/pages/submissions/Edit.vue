@@ -14,6 +14,7 @@ import RHeadingSmall from '@/components/RHeadingSmall.vue';
 import { SubmissionLog, SubmissionLogPagination } from '@/types/submission-logs';
 import SubmissionLogUI from '@/components/SubmissionLogUI.vue';
 import TextArea from '@/components/ui/textarea/TextArea.vue';
+import InputError from '@/components/InputError.vue';
 
 // --- Props ---
 const props = defineProps<{
@@ -40,6 +41,7 @@ const processing = ref(false);
 // --- Reactive State for Editable Fields ---
 const currentStatus = ref<string>(props.submission ? props.submission.status : '');
 const currentNote = ref<string>('');
+const currentNoteError = ref<string>('');
 
 // --- Available Statuses (Fallback if not passed as prop) ---
 // const defaultAvailableStatuses = [
@@ -81,11 +83,18 @@ const triggerInertiaVisit = (currentPage: number ) => {
 
 // --- Form Submission Logic ---
 const handleStatusChange = (options?: { status?: string}) => {
-    processing.value = true;
+    
     // console.log(forceStatus);
     if(options?.status) {
         currentStatus.value = options?.status;
     }
+
+    if(currentStatus.value == 'feedback' && currentNote.value == '') {
+        currentNoteError.value = "Feedback can't be blank."
+        return false;
+    }
+
+    processing.value = true;
 
     router.put(
         route('submissions.update-status', { id: props.submission.id }),
@@ -251,9 +260,10 @@ onMounted(() => {
                                         placeholder="Please write here ..."
                                         class="w-full h-[200px] bg-transparent"
                                     ></TextArea>
+                                    <InputError :message="currentNoteError" />
                                 </div>
 
-                                <Button type="ghost" variant="outline" class=" w-full mt-4 " tabindex="5" :disabled="processing" @click="handleStatusChange">
+                                <Button type="ghost" variant="secondary" class=" w-full mt-4 " tabindex="5" :disabled="processing" @click="handleStatusChange">
                                     <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
                                     Submit
                                 </Button>
