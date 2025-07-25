@@ -9,16 +9,39 @@ import {  MessageSquareText } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
-    // {
-    //     title: 'Dashboard',
-    //     href: '/dashboard',
-    //     icon: LayoutGrid,
-    // },
     {
-        title: 'Feature Requests',
-        href: '/feature-requests',
+        title: 'Dashboard',
+        href: '/dashboard',
         icon: MessageSquareText,
     },
+    {
+        title: 'Submissions',
+        href: '/submissions',
+        icon: MessageSquareText,
+    },
+    // {
+    //     title: 'Feature Requests',
+    //     href: '/feature-requests',
+    //     icon: MessageSquareText,
+    // },
+];
+
+const configNavItems: NavItem[] = [
+    {
+        title: 'Company Designations',
+        href: '/company-designations',
+        icon: MessageSquareText,
+    },
+    {
+        title: 'Countries',
+        href: '/countries',
+        icon: MessageSquareText,
+    },
+    {
+        title: 'Share Values',
+        href: '/share-values',
+        icon: MessageSquareText,
+    }
 ];
 
 const footerNavItems: NavItem[] = [
@@ -50,7 +73,7 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain :items="mainNavItems" :configs="configNavItems" />
         </SidebarContent>
 
         <SidebarFooter>
