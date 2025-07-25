@@ -7,7 +7,7 @@ enum SubmissionStatus: string
     case Pending = 'pending';
     case Approved = 'approved';
     case Rejected = 'rejected';
-    case Reviewed = 'reviewing';
+    case Reviewing = 'reviewing';
     case Feedback = 'feedback';
 
     public function label(): string
@@ -16,7 +16,7 @@ enum SubmissionStatus: string
             self::Pending => 'pending',
             self::Approved => 'approved',
             self::Rejected => 'rejected',
-            self::Reviewed => 'reviewing',
+            self::Reviewing => 'reviewing',
             self::Feedback => 'feedback'
         };
     }

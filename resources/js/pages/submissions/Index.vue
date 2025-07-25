@@ -262,7 +262,7 @@ const columns = [
         case 'rejected':
           colorClass = 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-200';
           break;
-        case 'reviewed':
+        case 'reviewing':
           colorClass = 'text-purple-600 bg-purple-100 dark:bg-purple-900 dark:text-purple-200';
           break;
         default:

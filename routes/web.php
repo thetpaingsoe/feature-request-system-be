@@ -23,7 +23,7 @@ Route::middleware(['auth', 'verified'])->prefix('feature-requests')->name('featu
 Route::middleware(['auth', 'verified'])->prefix('submissions')->name('submissions.')->group(function () {
     Route::get('/', [SubmissionController::class, 'index'])->name('index');
     Route::get('/{id}/edit', [SubmissionController::class, 'edit'])->name('edit');
-    // Route::put('/{id}', [SubmissionController::class, 'update'])->name('update');
+    Route::put('/{id}', [SubmissionController::class, 'updateStatus'])->name('update-status');
     // Route::delete('/{id}', [SubmissionController::class, 'destroy'])->name('destroy');
 });
 

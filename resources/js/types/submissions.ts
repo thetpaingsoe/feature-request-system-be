@@ -67,7 +67,7 @@ export type Submission = {
   beneficial_owners: BeneficialOwner[];
   directors: Director[];
 
-  status: 'pending' | 'approved' | 'rejected' | 'reviewed';
+  status: 'pending' | 'approved' | 'rejected' | 'reviewing' | 'feedback';
 
   note?: string;
   description?: string;

@@ -48,6 +48,7 @@ class SubmissionLogService
     {
         try {
             $submissionLog = SubmissionLog::create([
+                'submission_id' => $data->submission_id,
                 'type' => $data->type,
                 'data' => $data->data,
             ]);

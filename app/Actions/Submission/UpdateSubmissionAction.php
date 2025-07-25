@@ -24,7 +24,10 @@ class UpdateSubmissionAction
 
             $submission = $this->submissionService->get($id);
 
-            $submission = $this->submissionService->updateStatus($submission, $data['status']);
+            // @tod it should not update status here
+            // $submission = $this->submissionService->updateStatus($submission, $data['status']);
+
+            // no longer needed.
             $submission = $this->submissionService->updateNote($submission, $data['note']);
 
             DB::commit();

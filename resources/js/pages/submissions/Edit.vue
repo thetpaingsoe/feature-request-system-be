@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { Submission } from '@/types/submissions';
 import { Button } from '@/components/ui/button';
@@ -23,14 +23,15 @@ const props = defineProps<{
 }>();
 
 console.log(props.submissionLogsPagination);
-// const submissionLogsPagination = computed(() => props.submissionLogsPagination ?? []);
-const submissionLogs = ref<SubmissionLog[]>(props.submissionLogsPagination ? props.submissionLogsPagination.data : []); 
+const submissionLogsPagination = computed(() => props.submissionLogsPagination ?? []);
+const submissionLogs = ref<SubmissionLog[]>( props.submissionLogsPagination ? props.submissionLogsPagination.data : []); 
 console.log(submissionLogs.value.reverse());
 
 computed(() => {
   // Create a shallow copy of the array before reversing to avoid mutating the original
   return [...submissionLogs.value].reverse();
 });
+
 
 const submission = computed(() => props.submission );
 const processing = ref(false);
@@ -61,34 +62,60 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+const triggerInertiaVisit = (currentPage: number ) => {
+    
+    const params: Record<string, any> = {
+        page: currentPage ,
+        per_page: submissionLogsPagination.value.per_page * 2,
+    };
+
+    router.get(route('submissions.edit', { id: submission.value.id, ...params }),
+    {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+        only: ['submissionLogsPagination', 'flash'],
+    }
+)};
+
 // --- Form Submission Logic ---
-// const handleSubmit = () => {
-//     processing.value = true;
-//     router.put(
-//         route('submissions.update', { id: props.submission.id }),
-//         {
-//             status: currentStatus.value,
-//             // note: currentNote.value,      
-//         },
-//         {
-//             preserveScroll: true,
-//             onSuccess: () => {
-//                 // processing.value = false;
-//                 // alert('Submission updated successfully!'); 
-//             },
-//             onError: (errors) => {
-//                 // processing.value = false;
-//                 console.error('Error updating submission:', errors);
-//                 // alert('Failed to update submission. Check console for details.'); // Replace with proper error display
-//             },
-//         }
-//     );
-// };
+const handleSubmit = () => {
+    processing.value = true;
+    router.put(
+        route('submissions.update-status', { id: props.submission.id }),
+        {
+            status: "reviewing"//currentStatus.value,
+            // note: currentNote.value,      
+        },
+        {
+            preserveScroll: true,
+            preserveState: false,
+            onSuccess: () => {
+                // processing.value = false;
+                // alert('Submission updated successfully!'); 
+                // router.reload()
+            },
+            onError: (errors) => {
+                // processing.value = false;
+                console.error('Error updating submission:', errors);
+                // alert('Failed to update submission. Check console for details.'); // Replace with proper error display
+            },
+        }
+    );
+};
 
 // // --- Cancel Logic ---
 // const handleCancel = () => {
 //   router.get(route('submissions.index'));
 // };
+
+// router.on('finish', (event) => {  
+//     if(col2Ref.value != null)
+//         console.log(col2Ref.value.scrollHeight);
+//     if (! event.detail.visit.url.toString().includes("preserveState") && col2Ref.value != null) {
+//         col2Ref.value.scrollTop = col2Ref.value.scrollHeight;
+//     }
+// });
 
 const col2Ref = ref<HTMLElement | null>(null);
 
@@ -97,6 +124,7 @@ onMounted(() => {
   nextTick(() => {
     if (col2Ref.value) {
       col2Ref.value.scrollTop = col2Ref.value.scrollHeight;
+      
     }
   });
 });
@@ -116,6 +144,7 @@ onMounted(() => {
             <div class="flex flex-col md:flex-row md:flex-1 md:overflow-hidden gap-6">
                 <!-- Column 1 -->
                 <div class="md:w-2/3 overflow-y-auto p-4 border border-gray-300 rounded dark:border-gray-700">
+                    
                     <div class="space-y-4">
                         <div>
 
@@ -171,20 +200,31 @@ onMounted(() => {
 
                 <!-- Column 2 -->
                 <div ref="col2Ref" class="md:w-1/3 md:overflow-y-auto p-4 border border-dashed border-gray-400 dark:border-gray-800 rounded">
+                    
                     <div class="space-y-4">
                         <div class="w-full ">
 
+                            <div v-if="submissionLogsPagination.current_page < submissionLogsPagination.last_page">
+                                <p @click="triggerInertiaVisit(submissionLogsPagination.current_page)" class=" cursor-pointer text-center w-full font-bold underline ">Load More ...</p>
+                            </div>
                             <div class="w-full" v-for="s in submissionLogs " :key="s.id">
                                 <SubmissionLogUI :submission-log="s" />
                             </div>
 
-                            <div class="flex flex-col items-center justify-center">
+                            <div class="flex flex-col items-center justify-center" v-if="submission.status == 'pending'">
                                 <p class="text-sm text-muted-foreground mt-12"> Are you ready to start review this submission ? </p>        
 
-                                <Button type="submit" class=" w-48 mt-4 " tabindex="5" :disabled="processing">
+                                <Button type="submit" class=" w-48 mt-4 " tabindex="5" :disabled="processing" @click="handleSubmit">
                                     <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
                                     Start Review
                                 </Button>
+                            </div>
+
+                            <div class="flex flex-col items-center justify-center" v-else-if="submission.status == 'reviewing'">
+                                <p class="text-sm text-muted-foreground mt-12"> Are you ready to start review this submission ? </p>        
+
+                                You are Reviewing....
+                                
                             </div>
                         </div>
                     </div>

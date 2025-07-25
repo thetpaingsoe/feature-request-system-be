@@ -6,10 +6,12 @@ use App\Actions\Submission\DeleteSubmissionAction;
 use App\Actions\Submission\GetSubmissionAction;
 use App\Actions\Submission\SearchSubmissionAction;
 use App\Actions\Submission\UpdateSubmissionAction;
+use App\Actions\Submission\UpdateSubmissionStatusAction;
 use App\Actions\SubmissionLog\SearchSubmissionLogAction;
 use App\Enums\SubmissionStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Submission\SubmissionUpdateRequest;
+use App\Http\Requests\Submission\SubmissionUpdateStatusRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -23,7 +25,8 @@ class SubmissionController extends Controller
         protected GetSubmissionAction $getSubmissionAction,
         protected UpdateSubmissionAction $updateSubmissionAction,
         protected DeleteSubmissionAction $deleteSubmissionAction,
-        protected SearchSubmissionLogAction $searchSubmissionLogAction
+        protected SearchSubmissionLogAction $searchSubmissionLogAction,
+        protected UpdateSubmissionStatusAction $updateSubmissionStatusAction
     ) {}
 
     /**
@@ -96,5 +99,12 @@ class SubmissionController extends Controller
 
             return back()->withErrors(['delete' => 'Failed to delete submission.']);
         }
+    }
+
+    public function updateStatus(SubmissionUpdateStatusRequest $request, $id)
+    {
+        $this->updateSubmissionStatusAction->handle($id, $request);
+
+        return redirect()->back();
     }
 }
