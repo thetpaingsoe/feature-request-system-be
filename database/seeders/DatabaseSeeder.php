@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             ShareValueSeeder::class,
             CountrySeeder::class,
             SubmissionSeeder::class,
+            SubmissionLogSeeder::class
         ]);
     }
 }
