@@ -227,7 +227,7 @@ onMounted(() => {
                             </div>
 
                             <div class="flex flex-col items-center justify-center" v-if="submission.status == 'pending'">
-                                <p class="text-sm text-muted-foreground mt-12"> Are you ready to start review this submission ? </p>        
+                                <p class="text-sm text-muted-foreground mt-12 mx-12 text-center"> By starting this review, you will lock the submission form for the user, preventing further updates. The user will only be able to make changes again if the submission moves to the 'Feedback'.</p>        
 
                                 <Button type="submit" class=" w-48 mt-4 " tabindex="5" :disabled="processing" @click="handleStatusChange({status : 'reviewing'})">
                                     <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 

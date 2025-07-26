@@ -51,17 +51,45 @@ class UpdateSubmissionStatusAction
             }
 
             if (isset($validatedData['note'])) {
-                $data = [
+                $noteData = [
                     'message' => $validatedData['note'],
                     'user_id' => $userId,
                 ];
                 $log = (object) [
                     'submission_id' => $id,
                     'type' => SubmissionLogTypes::SuggestionMessage,
-                    'data' => $data,
+                    'data' => $noteData,
                 ];
                 $this->submissionLogService->create($log);
             }
+            // dd($data['to'], SubmissionLogTypes::Approved->value, $data['to'] === SubmissionLogTypes::Approved->value);
+            if($data['to'] == SubmissionLogTypes::Rejected->value) {
+
+                $rejectData = [
+                    'user_id' => $userId,
+                ];
+                $log = (object) [
+                    'submission_id' => $id,
+                    'type' => SubmissionLogTypes::Rejected,
+                    'data' => $rejectData,
+                ];
+                // dd($log);
+                $this->submissionLogService->create($log);
+
+            }else if($data['to'] == SubmissionLogTypes::Approved->value) {
+                $approveData = [
+                    'user_id' => $userId,
+                ];
+                $log = (object) [
+                    'submission_id' => $id,
+                    'type' => SubmissionLogTypes::Approved,
+                    'data' => $approveData,
+                ];
+                // dd($log);
+                $this->submissionLogService->create($log);
+            }
+
+            
 
             DB::commit();
 

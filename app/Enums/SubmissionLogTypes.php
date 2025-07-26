@@ -10,7 +10,7 @@ enum SubmissionLogTypes: string
     case SuggestionMessage = 'sugg_message';
     case SuggestionAccepted = 'sugg_accept';
     case SuggestionRejected = 'sugg_reject';
-    case Accepted = 'accepted';
+    case Approved = 'approved';
     case Rejected = 'rejected';
 
     public function label(): string
@@ -22,7 +22,7 @@ enum SubmissionLogTypes: string
             self::SuggestionMessage => 'sugg_message',
             self::SuggestionAccepted => 'sugg_accept',
             self::SuggestionRejected => 'sugg_reject',
-            self::Accepted => 'accepted',
+            self::Approved => 'approved',
             self::Rejected => 'rejected'
         };
     }

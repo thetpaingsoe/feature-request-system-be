@@ -73,13 +73,13 @@ defineProps<Props>();
     </div>
 
     <!-- Submission Accepted -->
-    <div v-else-if="submissionLog.type == 'accepted' " class="flex my-4 w-full">
+    <div v-else-if="submissionLog.type == 'approved' " class="flex my-4 w-full">
         <div>
             <FileCheck class="size-4 mx-2 text-green-700 mt-1" /> 
         </div>
         <div class="w-full">{{ submissionLog.user_object.name }} : 
             <p class="text-gray-500"> at {{ new Date(submissionLog.created_at).toLocaleString() }}</p>
-            <p class="text-normal w-full bg-green-700 text-white py-2 rounded text-center my-2">Accepted.</p>            
+            <p class="text-normal w-full bg-green-700 text-white py-2 rounded text-center my-2">Approved.</p>            
         </div>
     </div>
 
