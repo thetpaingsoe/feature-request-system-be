@@ -28,6 +28,9 @@ class SubmissionService
                 ->when($filters['status'] ?? null, function ($query, $status) {
                     $query->where('status', $status);
                 })
+                ->when($filters['user_id'] ?? null, function ($query, $user_id) {
+                    $query->where('user_id', $user_id);
+                })
                 ->when($filters['date_start'] ?? null, function ($query, $dateStart) {
                     $query->whereDate('created_at', '>=', $dateStart);
                 })

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Submission;
 
+use App\Models\User;
 use App\Services\Submission\SubmissionService;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -20,6 +21,12 @@ class SearchSubmissionAction
             $sorting = $request->only(['sort_by', 'sort_direction']);
             $page = $request->input('page', 1);
             $perPage = $request->input('per_page', 10);
+
+            $user = $request->user();
+            // When user is not admin, auto filter by user id
+            if (! $user->hasRole('admin')) {
+                $filters['user_id'] = $user->id;
+            }
 
             $submissions = $this->submission->search($filters, $sorting, $page, $perPage);
 
