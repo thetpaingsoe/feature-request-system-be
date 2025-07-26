@@ -63,7 +63,7 @@ class UpdateSubmissionStatusAction
                 $this->submissionLogService->create($log);
             }
             // dd($data['to'], SubmissionLogTypes::Approved->value, $data['to'] === SubmissionLogTypes::Approved->value);
-            if($data['to'] == SubmissionLogTypes::Rejected->value) {
+            if ($data['to'] == SubmissionLogTypes::Rejected->value) {
 
                 $rejectData = [
                     'user_id' => $userId,
@@ -76,7 +76,7 @@ class UpdateSubmissionStatusAction
                 // dd($log);
                 $this->submissionLogService->create($log);
 
-            }else if($data['to'] == SubmissionLogTypes::Approved->value) {
+            } elseif ($data['to'] == SubmissionLogTypes::Approved->value) {
                 $approveData = [
                     'user_id' => $userId,
                 ];
@@ -88,8 +88,6 @@ class UpdateSubmissionStatusAction
                 // dd($log);
                 $this->submissionLogService->create($log);
             }
-
-            
 
             DB::commit();
 

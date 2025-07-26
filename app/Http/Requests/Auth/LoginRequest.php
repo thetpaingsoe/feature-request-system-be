@@ -49,6 +49,17 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Add this block to check user role after successful login
+        $user = Auth::user();
+
+        if (! $user->hasRole('admin')) {
+            Auth::logout(); // logout the user
+
+            throw ValidationException::withMessages([
+                'email' => 'You do not have permission to access this area.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
