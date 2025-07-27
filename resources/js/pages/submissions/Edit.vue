@@ -190,21 +190,21 @@ onMounted(() => {
                             <hr class="mt-4"/>
                             <RHeadingSmall 
                                 title="Shareholders" 
-                                :description="submission.shareholders?.map(j => `${j.name ?? '-'}\n ${j.email ?? '-'}\n ${j.percentage ?? '-'}%`).join('\n\n') ?? ''" 
+                                :description="submission.shareholders?.map(j => `${j.name ?? '-'}\n${j.email ?? '-'}\n${j.percentage ?? '-'}%`).join('\n\n') ?? ''" 
                                 class="mt-4"
                                 style="white-space: pre-wrap;"
                             />
                             <hr class="mt-4"/>
                             <RHeadingSmall 
                                 title="Beneficial Owner" 
-                                :description="submission.beneficial_owners?.map(j => `${j.name ?? '-'}\n${j.relationship ?? '-'}`).join('\n\n') ?? ''" 
+                                :description="submission.beneficial_owners?.map(j => `${j.name ?? '-'}\n${j.email ?? '-'}`).join('\n\n') ?? ''" 
                                 class="mt-4"
                                 style="white-space: pre-wrap;"
                             />
                             <hr class="mt-4"/>
                             <RHeadingSmall 
                                 title="Directors" 
-                                :description="submission.directors?.map(j => `${j.name ?? '-'}\n${j.email ?? '-'}\n${j.position ?? '-'}`).join('\n\n') ?? ''" 
+                                :description="submission.directors?.map(j => `${j.name ?? '-'}\n${j.email ?? '-'}}`).join('\n\n') ?? ''" 
                                 class="mt-4"
                                 style="white-space: pre-wrap;"
                             />                    

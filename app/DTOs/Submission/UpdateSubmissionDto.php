@@ -4,7 +4,7 @@ namespace App\DTOs\Submission;
 
 use Spatie\LaravelData\Data;
 
-class StoreSubmissionDto extends Data
+class UpdateSubmissionDto extends Data
 {
     public function __construct(
         public string $full_name,

@@ -19,6 +19,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/submissions', [SubmissionApiController::class, 'search']);
 
+    Route::post('/submissions', [SubmissionApiController::class, 'store']);
+
     Route::get('/countries', [CountryApiController::class, 'search']);
 
     Route::get('/desinations', [CompanyDesignationApiController::class, 'search']);

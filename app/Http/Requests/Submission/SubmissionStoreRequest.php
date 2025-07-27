@@ -40,6 +40,7 @@ class SubmissionStoreRequest extends FormRequest
             'shareholders' => ['required', 'array'],
             'shareholders.*.name' => ['required', 'string', 'max:255'],
             'shareholders.*.email' => ['required', 'string', 'email', 'max:255'],
+            'shareholders.*.percentage' => ['required', 'integer'],
 
             'beneficial_owners' => ['required', 'array'],
             'beneficial_owners.*.name' => ['required', 'string', 'max:255'],
@@ -49,9 +50,6 @@ class SubmissionStoreRequest extends FormRequest
             'directors.*.name' => ['required', 'string', 'max:255'],
             'directors.*.email' => ['required', 'string', 'email', 'max:255'],
 
-            // Note
-            // UserId
-            // Status
         ];
     }
 }

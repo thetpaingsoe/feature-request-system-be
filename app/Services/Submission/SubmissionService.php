@@ -65,16 +65,26 @@ class SubmissionService
         }
     }
 
-    public function create($data)
+    public function create($data, $userId)
     {
         try {
             $submission = Submission::create([
-                'title' => $data->title,
-                'description' => $data->description,
+                'user_id' => $userId,
+                'full_name' => $data->full_name,
                 'email' => $data->email,
+                'company_name' => $data->company_name,
+                'alternative_company_name' => $data->alternative_company_name,
+                'company_designation_id' => $data->company_designation_id,
+                'jurisdiction_of_operation_id' => $data->jurisdiction_of_operation_id,
+                'target_jurisdictions' => $data->target_jurisdictions,
+                'number_of_shares' => $data->number_of_shares,
+                'are_all_shares_issued' => $data->are_all_shares_issued,
+                'number_of_issued_shares' => $data->number_of_issued_shares,
+                'share_value_id' => $data->share_value_id,
+                'shareholders' => $data->shareholders,
+                'beneficial_owners' => $data->beneficial_owners,
+                'directors' => $data->directors,
             ]);
-
-            $submission->refresh(); // to include full object
 
             return $submission;
 

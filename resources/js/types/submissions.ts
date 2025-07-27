@@ -14,12 +14,11 @@ type Shareholder = {
 
 type BeneficialOwner = {
   name: string;
-  relationship: string;
+  email : string;
 };
 
 type Director = {
   name: string;
-  position: string;
   email: string;
 };
 
