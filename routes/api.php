@@ -17,9 +17,12 @@ Route::post('/feature-requests', [FeatureRequestApiController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/submissions', [SubmissionApiController::class, 'search']);
-
-    Route::post('/submissions', [SubmissionApiController::class, 'store']);
+    Route::prefix('submissions')->controller(SubmissionApiController::class)->group(function () {
+        Route::get('/', 'search'); 
+        Route::post('/', 'store'); 
+        Route::get('/{id}', 'get'); 
+        Route::put('/{id}', 'update'); 
+    });
 
     Route::get('/countries', [CountryApiController::class, 'search']);
 

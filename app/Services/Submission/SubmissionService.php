@@ -96,6 +96,50 @@ class SubmissionService
         return $data;
     }
 
+    public function update(int $submissionId, $data, int $userId): Submission
+    {
+        try {
+            // Find the submission by ID. Use findOrFail to automatically throw a 404 if not found.
+            $submission = Submission::findOrFail($submissionId);
+
+            // Ensure the user trying to update the submission actually owns it
+            // or has the necessary permissions.
+            if ($submission->user_id !== $userId) {
+                throw new \Illuminate\Auth\Access\AuthorizationException('You are not authorized to update this submission.');
+            }
+            
+            // Update the submission attributes
+            $submission->update([
+                'full_name' => $data->full_name,
+                'email' => $data->email,
+                'company_name' => $data->company_name,
+                'alternative_company_name' => $data->alternative_company_name,
+                'company_designation_id' => $data->company_designation_id,
+                'jurisdiction_of_operation_id' => $data->jurisdiction_of_operation_id,
+                'target_jurisdictions' => $data->target_jurisdictions,
+                'number_of_shares' => $data->number_of_shares,
+                'are_all_shares_issued' => $data->are_all_shares_issued,
+                'number_of_issued_shares' => $data->number_of_issued_shares,
+                'share_value_id' => $data->share_value_id,
+                'shareholders' => $data->shareholders,
+                'beneficial_owners' => $data->beneficial_owners,
+                'directors' => $data->directors,                
+            ]);
+
+            return $submission;
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::warning('SubmissionService::update : Submission not found for ID '.$submissionId, ['exception' => $e]);
+            throw $e;
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            Log::warning('SubmissionService::update : Unauthorized attempt to update submission ID '.$submissionId.' by user '.$userId, ['exception' => $e]);
+            throw $e; 
+        } catch (Throwable $e) {
+            Log::error('SubmissionService::update : '.$e->getMessage(), ['exception' => $e, 'submission_id' => $submissionId, 'user_id' => $userId]);
+            throw $e; 
+        }
+    }
+
     public function updateStatus(Submission $submission, string $newStatus): Submission
     {
         try {

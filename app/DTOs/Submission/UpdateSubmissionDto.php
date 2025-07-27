@@ -18,11 +18,8 @@ class UpdateSubmissionDto extends Data
         public bool $are_all_shares_issued,
         public int $number_of_issued_shares,
         public int $share_value_id,
-        public string $shareholders,
-        public string $beneficial_owners,
-        public string $directors,
-
-        // Note: 'user_id'
-        // Note: 'status'
+        public array $shareholders,
+        public array $beneficial_owners,
+        public array $directors,
     ) {}
 }

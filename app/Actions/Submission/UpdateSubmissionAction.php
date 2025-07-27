@@ -2,6 +2,9 @@
 
 namespace App\Actions\Submission;
 
+use App\DTOs\Submission\UpdateSubmissionDto;
+use App\Enums\SubmissionLogTypes;
+use App\Services\Submission\SubmissionLogService;
 use App\Services\Submission\SubmissionService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -10,26 +13,35 @@ use Throwable;
 class UpdateSubmissionAction
 {
     public function __construct(
-        protected SubmissionService $submissionService
+        protected SubmissionService $submissionService,
+        protected SubmissionLogService $submissionLogService
     ) {}
 
     public function handle($id, $request)
     {
 
-        DB::beginTransaction();
-
         try {
 
-            $data = $request->validated();
+            DB::beginTransaction();
 
-            $submission = $this->submissionService->get($id);
+            $data = UpdateSubmissionDto::from($request->validated());
+            
+            $userId = auth()->id();
 
-            // @tod it should not update status here
-            // $submission = $this->submissionService->updateStatus($submission, $data['status']);
+            $submission = $this->submissionService->update($id, $data, $userId);
+            
+            $noteData = [
+                'user_id' => $userId,
+            ];
 
-            // no longer needed.
-            $submission = $this->submissionService->updateNote($submission, $data['note']);
-
+            $log = (object) [
+                'submission_id' => $submission->id,
+                'type' => SubmissionLogTypes::Update,
+                'data' => $noteData,
+            ];
+            
+            $this->submissionLogService->create($log);
+            
             DB::commit();
 
             return $submission;
