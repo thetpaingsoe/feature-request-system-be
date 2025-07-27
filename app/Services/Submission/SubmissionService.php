@@ -107,7 +107,7 @@ class SubmissionService
             if ($submission->user_id !== $userId) {
                 throw new \Illuminate\Auth\Access\AuthorizationException('You are not authorized to update this submission.');
             }
-            
+
             // Update the submission attributes
             $submission->update([
                 'full_name' => $data->full_name,
@@ -123,7 +123,7 @@ class SubmissionService
                 'share_value_id' => $data->share_value_id,
                 'shareholders' => $data->shareholders,
                 'beneficial_owners' => $data->beneficial_owners,
-                'directors' => $data->directors,                
+                'directors' => $data->directors,
             ]);
 
             return $submission;
@@ -133,10 +133,10 @@ class SubmissionService
             throw $e;
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             Log::warning('SubmissionService::update : Unauthorized attempt to update submission ID '.$submissionId.' by user '.$userId, ['exception' => $e]);
-            throw $e; 
+            throw $e;
         } catch (Throwable $e) {
             Log::error('SubmissionService::update : '.$e->getMessage(), ['exception' => $e, 'submission_id' => $submissionId, 'user_id' => $userId]);
-            throw $e; 
+            throw $e;
         }
     }
 

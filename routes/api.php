@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CountryApiController;
 use App\Http\Controllers\Api\FeatureRequestApiController;
 use App\Http\Controllers\Api\ShareValueApiController;
 use App\Http\Controllers\Api\SubmissionApiController;
+use App\Http\Controllers\Api\SubmissionLogApiController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,10 +19,14 @@ Route::post('/feature-requests', [FeatureRequestApiController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('submissions')->controller(SubmissionApiController::class)->group(function () {
-        Route::get('/', 'search'); 
-        Route::post('/', 'store'); 
-        Route::get('/{id}', 'get'); 
-        Route::put('/{id}', 'update'); 
+        Route::get('/', 'search');
+        Route::post('/', 'store');
+        Route::get('/{id}', 'get');
+        Route::put('/{id}', 'update');
+    });
+
+    Route::prefix('submission-logs')->controller(SubmissionLogApiController::class)->group(function () {
+        Route::get('/{submission_id}', 'search');
     });
 
     Route::get('/countries', [CountryApiController::class, 'search']);

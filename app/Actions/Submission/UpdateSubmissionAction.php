@@ -25,11 +25,11 @@ class UpdateSubmissionAction
             DB::beginTransaction();
 
             $data = UpdateSubmissionDto::from($request->validated());
-            
+
             $userId = auth()->id();
 
             $submission = $this->submissionService->update($id, $data, $userId);
-            
+
             $noteData = [
                 'user_id' => $userId,
             ];
@@ -39,9 +39,9 @@ class UpdateSubmissionAction
                 'type' => SubmissionLogTypes::Update,
                 'data' => $noteData,
             ];
-            
+
             $this->submissionLogService->create($log);
-            
+
             DB::commit();
 
             return $submission;

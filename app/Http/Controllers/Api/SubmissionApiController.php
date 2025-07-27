@@ -64,7 +64,7 @@ class SubmissionApiController extends Controller
 
     public function update(SubmissionUpdateRequest $request, $id)
     {
-        try {            
+        try {
             return response()->json($this->updateSubmissionAction->handle($id, $request), 201);
         } catch (Throwable $e) {
             Log::error('SubmissionApiController::store : '.$e->getMessage(), ['exception' => $e]);
