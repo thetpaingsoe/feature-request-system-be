@@ -2,7 +2,7 @@
 
 namespace App\Actions\Submission;
 
-use App\Enums\SubmissionLogTypes;
+use App\Actions\SubmissionLog\RecordSubmissionLogAction;
 use App\Services\Submission\SubmissionLogService;
 use App\Services\Submission\SubmissionService;
 use Exception;
@@ -14,7 +14,8 @@ class UpdateSubmissionStatusAction
 {
     public function __construct(
         protected SubmissionService $submissionService,
-        protected SubmissionLogService $submissionLogService
+        protected SubmissionLogService $submissionLogService,
+        protected RecordSubmissionLogAction $recordSubmissionLogAction
     ) {}
 
     public function handle($id, $request)
@@ -35,59 +36,11 @@ class UpdateSubmissionStatusAction
             $data = [
                 'from' => $submission->status,
                 'to' => $validatedData['status'],
-                'user_id' => $userId,
             ];
 
             $submission = $this->submissionService->updateStatus($submission, $validatedData['status']);
 
-            $log = (object) [
-                'submission_id' => $id,
-                'type' => SubmissionLogTypes::StatusChange,
-                'data' => $data,
-            ];
-
-            if ($data['from'] != $data['to']) {
-                $this->submissionLogService->create($log);
-            }
-
-            if (isset($validatedData['note'])) {
-                $noteData = [
-                    'message' => $validatedData['note'],
-                    'user_id' => $userId,
-                ];
-                $log = (object) [
-                    'submission_id' => $id,
-                    'type' => SubmissionLogTypes::SuggestionMessage,
-                    'data' => $noteData,
-                ];
-                $this->submissionLogService->create($log);
-            }
-            // dd($data['to'], SubmissionLogTypes::Approved->value, $data['to'] === SubmissionLogTypes::Approved->value);
-            if ($data['to'] == SubmissionLogTypes::Rejected->value) {
-
-                $rejectData = [
-                    'user_id' => $userId,
-                ];
-                $log = (object) [
-                    'submission_id' => $id,
-                    'type' => SubmissionLogTypes::Rejected,
-                    'data' => $rejectData,
-                ];
-                // dd($log);
-                $this->submissionLogService->create($log);
-
-            } elseif ($data['to'] == SubmissionLogTypes::Approved->value) {
-                $approveData = [
-                    'user_id' => $userId,
-                ];
-                $log = (object) [
-                    'submission_id' => $id,
-                    'type' => SubmissionLogTypes::Approved,
-                    'data' => $approveData,
-                ];
-                // dd($log);
-                $this->submissionLogService->create($log);
-            }
+            $this->recordSubmissionLogAction->handle($request, $id, $data);
 
             DB::commit();
 

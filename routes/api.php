@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('submission-logs')->controller(SubmissionLogApiController::class)->group(function () {
         Route::get('/{submission_id}', 'search');
+        Route::post('/{submission_id}/reply', 'reply');
     });
 
     Route::get('/countries', [CountryApiController::class, 'search']);
