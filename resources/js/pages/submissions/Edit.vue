@@ -158,7 +158,10 @@ onMounted(() => {
             <!-- Columns Container -->
             <div class="flex flex-col md:flex-row md:flex-1 md:overflow-hidden gap-6">
                 <!-- Column 1 -->
-                <div class="md:w-2/3 overflow-y-auto p-4 border border-gray-300 rounded dark:border-gray-700">
+                <div class="md:w-2/3 
+                    [&::-webkit-scrollbar]:w-2
+                    [&::-webkit-scrollbar-track]:bg-gray-800
+                    [&::-webkit-scrollbar-thumb]:bg-gray-900 overflow-y-auto p-4 border border-gray-300 rounded dark:border-gray-700">
                     
                     <div class="space-y-4">
                         <div>
@@ -214,7 +217,11 @@ onMounted(() => {
                 </div>
 
                 <!-- Column 2 -->
-                <div ref="col2Ref" class="md:w-1/3 md:overflow-y-auto p-4 border border-dashed border-gray-400 dark:border-gray-800 rounded">
+                <div ref="col2Ref" class="md:w-1/3 
+                    [&::-webkit-scrollbar]:w-2
+                    [&::-webkit-scrollbar-track]:bg-gray-800
+                    [&::-webkit-scrollbar-thumb]:bg-gray-900
+                    md:overflow-y-auto p-4 border border-dashed border-gray-400 dark:border-gray-800 rounded">
                     
                     <div class="space-y-4">
                         <div class="w-full ">
