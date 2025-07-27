@@ -40,6 +40,7 @@ class SubmissionUpdateRequest extends FormRequest
             'shareholders' => ['required', 'array'],
             'shareholders.*.name' => ['required', 'string', 'max:255'],
             'shareholders.*.email' => ['required', 'string', 'email', 'max:255'],
+            'shareholders.*.percentage' => ['required', 'string'],
 
             'beneficial_owners' => ['required', 'array'],
             'beneficial_owners.*.name' => ['required', 'string', 'max:255'],
