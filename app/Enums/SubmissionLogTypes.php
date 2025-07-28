@@ -16,7 +16,7 @@ enum SubmissionLogTypes: string
     public function label(): string
     {
         return match ($this) {
-            self::Create => 'pending',
+            self::Create => 'create',
             self::Update => 'update',
             self::StatusChange => 'status_change',
             self::SuggestionMessage => 'sugg_message',

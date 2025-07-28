@@ -7,22 +7,12 @@ use App\Http\Controllers\FeatureRequest\FeatureRequestController;
 use App\Http\Controllers\ShareValue\ShareValueController;
 use App\Http\Controllers\Submission\SubmissionController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
-    // Route::get('/', function () {
-    //     return Inertia::render('Dashboard');
-    // })->name('home');
     Route::get('/', [DashboardController::class, 'index'])->name('home');
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    // Route::prefix('dashboard')->name('dashboard.')->group(function () {
-    //     Route::get('/', [DashboardController::class, 'index'])->name('index');
-    // });
-    // Route::get('dashboard', function () {
-    //     return Inertia::render('Dashboard');
-    // })->name('dashboard');
 
     Route::prefix('feature-requests')->name('feature-requests.')->group(function () {
         Route::get('/', [FeatureRequestController::class, 'index'])->name('index');

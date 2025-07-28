@@ -19,7 +19,7 @@ class SearchSubmissionLogAction
             $sorting = $request->only(['sort_by', 'sort_direction']);
             $page = $request->input('page', 1);
             $perPage = $request->input('per_page', $perPage);
-            
+
             $submissionLogs = $this->submissionLog->search($id, $sorting, $page, $perPage);
 
             $rtnData = [
