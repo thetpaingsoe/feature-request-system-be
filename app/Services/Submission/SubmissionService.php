@@ -184,4 +184,32 @@ class SubmissionService
             throw $e;
         }
     }
+
+    protected function formatCount(int $count): string
+    {
+        return $count > 99 ? '99+' : (string) $count;
+    }
+
+    public function getDashboardCounts(): array
+    {
+        try {
+            $baseQuery = Submission::query();
+
+            $pendingCount = $baseQuery->clone()->where('status', 'pending')->count();
+            $reviewingCount = $baseQuery->clone()->where('status', 'reviewing')->count();
+            $feedbackCount = $baseQuery->clone()->where('status', 'feedback')->count();
+            $totalCount = $baseQuery->clone()->count();
+
+            return [
+                'pending' => $this->formatCount($pendingCount),
+                'reviewing' => $this->formatCount($reviewingCount),
+                'feedback' => $this->formatCount($feedbackCount),
+                'total' => $this->formatCount($totalCount),
+            ];
+
+        } catch (Throwable $e) {
+            Log::error('SubmissionService::getDashboardCounts : '.$e->getMessage(), ['exception' => $e]);
+            throw $e;
+        }
+    }
 }

@@ -19,7 +19,11 @@ export type SubmissionLog = {
   id: number;
   type: string;
   data: string;
+  submission_id : string;
   user_object: UserType; 
+  submission_object : {
+    company_name : string
+  },
   created_at: string;
   updated_at: string;
   status_change : StatusChangeType,

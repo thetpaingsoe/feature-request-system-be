@@ -25,6 +25,7 @@ class SubmissionLog extends Model
         'user_object',
         'status_change',
         'feedback_message',
+        'submission_object',
     ];
 
     // Relationships
@@ -42,6 +43,17 @@ class SubmissionLog extends Model
             return User::select('id', 'name', 'email')->find($userId);
             // return User::find($userId);
 
+        }
+
+        return null;
+    }
+
+    public function getSubmissionObjectAttribute()
+    {
+        $subId = $this->submission_id ?? null;
+
+        if ($subId) {
+            return Submission::select('id', 'company_name')->find($subId);
         }
 
         return null;

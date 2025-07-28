@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Country\CountryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Designation\DesignationController;
 use App\Http\Controllers\FeatureRequest\FeatureRequestController;
 use App\Http\Controllers\ShareValue\ShareValueController;
@@ -10,13 +11,18 @@ use Inertia\Inertia;
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
-    Route::get('/', function () {
-        return Inertia::render('Dashboard');
-    })->name('home');
+    // Route::get('/', function () {
+    //     return Inertia::render('Dashboard');
+    // })->name('home');
+    Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-    Route::get('dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Route::prefix('dashboard')->name('dashboard.')->group(function () {
+    //     Route::get('/', [DashboardController::class, 'index'])->name('index');
+    // });
+    // Route::get('dashboard', function () {
+    //     return Inertia::render('Dashboard');
+    // })->name('dashboard');
 
     Route::prefix('feature-requests')->name('feature-requests.')->group(function () {
         Route::get('/', [FeatureRequestController::class, 'index'])->name('index');

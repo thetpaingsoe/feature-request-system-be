@@ -271,9 +271,9 @@ onMounted(() => {
                                     <InputError :message="currentNoteError" />
                                 </div>
 
-                                <Button type="ghost" variant="secondary" class=" w-full mt-4 " tabindex="5" :disabled="processing" @click="handleStatusChange">
+                                <Button type="button" variant="destructive" class="w-full mt-4 " tabindex="5" :disabled="processing" @click="handleStatusChange">
                                     <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
-                                    Submit
+                                    SUBMIT
                                 </Button>
                                 
                             </div>

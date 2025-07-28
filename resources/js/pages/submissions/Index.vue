@@ -161,16 +161,12 @@ function dateFilterCleared() {
     triggerInertiaVisit({ resetPageIndex: true });
 }
 
-// @todo --- Action Handlers ---
-const handleEdit = (id: number): void => {
-    console.log("Edit")
-    console.log(id)
-    const params: Record<string, any> = {
-        // page: 0,
-        // per_page: 10,
-    };
-
-  router.get(route('submissions.edit', { id: id, ...params }));
+// --- Action Handlers ---
+const handleEdit = (id: number, cellId : string): void => {
+    if(!cellId.includes('_actions')) {
+        const params: Record<string, any> = {};
+        router.get(route('submissions.edit', { id: id, ...params }));
+    }
 };
 
 const isDeleteDialogOpen = ref(false);
@@ -469,21 +465,29 @@ const table = useVueTable<Submission>({
                                 No submissions found matching your criteria.
                             </td>
                         </tr>
-                        <tr v-for="row in table.getRowModel().rows" @click="handleEdit(row.original.id)"
-                            :key="row.id" class="dark:hover:bg-gray-900 hover:bg-gray-100 cursor-pointer">
+                        <tr v-for="row in table.getRowModel().rows" 
+                            :key="row.id" class="dark:hover:bg-gray-900 hover:bg-gray-100 cursor-pointer" >
                             <td
                                 v-for="cell in row.getVisibleCells()"
                                 :key="cell.id"
-                                class="px-6 py-4 whitespace-nowrap text-sm "
+                                class="px-6 py-4 whitespace-nowrap text-sm " @click="handleEdit(row.original.id, cell.id)"
                             >
-                            <Label class="cursor-pointer">
-                                <!-- Use FlexRender for cell content -->
-                                <FlexRender
-                                    :render="cell.column.columnDef.cell"
-                                    :props="cell.getContext()"
+                            <!-- <div v-if="cell.id.includes('_actions')">
+                                <Label class="cursor-pointer">
                                     
-                                />
-                            </Label>
+                                    <FlexRender
+                                        :render="cell.column.columnDef.cell"
+                                        :props="cell.getContext()"/>
+                                </Label>
+                            </div>
+                            <div v-else > -->
+                                <Label class="cursor-pointer">
+                                    <!-- Use FlexRender for cell content -->
+                                    <FlexRender
+                                        :render="cell.column.columnDef.cell"
+                                        :props="cell.getContext()"/>
+                                </Label>
+                            <!-- </div> -->
                             </td>
                         </tr>
                     </tbody>

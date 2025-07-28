@@ -10,7 +10,7 @@ use Throwable;
 
 class SubmissionLogService
 {
-    public function search(int $id, array $sorting, int $page, int $perPage = 10)
+    public function search(?int $id, array $sorting, int $page, int $perPage = 10)
     {
         try {
             $query = SubmissionLog::query();
