@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 
@@ -9,12 +9,14 @@ defineProps<{
 }>();
 
 const page = usePage();
+const { isMobile, state } = useSidebar()
+
 </script>
 
 <template>
     <SidebarGroup class="px-2 py-0">
         <SidebarGroupLabel>Submissions</SidebarGroupLabel>
-        <SidebarMenu>
+        <SidebarMenu class="mb-1">
             <SidebarMenuItem v-for="item in items" :key="item.title">
                 <SidebarMenuButton as-child :is-active="item.href === page.url" :tooltip="item.title">
                     <Link :href="item.href">
@@ -25,7 +27,7 @@ const page = usePage();
             </SidebarMenuItem>
         </SidebarMenu>
 
-        <SidebarGroupLabel>Configurations</SidebarGroupLabel>
+        <SidebarGroupLabel :hidden="state === 'collapsed'" >Configurations</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in configs" :key="item.title">
                 <SidebarMenuButton as-child :is-active="item.href === page.url" :tooltip="item.title">

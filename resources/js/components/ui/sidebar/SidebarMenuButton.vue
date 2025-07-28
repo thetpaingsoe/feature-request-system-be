@@ -35,11 +35,12 @@ const delegatedProps = computed(() => {
         <slot />
       </SidebarMenuButtonChild>
     </TooltipTrigger>
+    
     <TooltipContent
       side="right"
       align="center"
-      :hidden="state !== 'collapsed' || isMobile"
-    >
+      :hidden="state !== 'collapsed' || isMobile"      
+    >    
       <template v-if="typeof tooltip === 'string'">
         {{ tooltip }}
       </template>
