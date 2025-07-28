@@ -3,6 +3,7 @@
 use App\Http\Controllers\Country\CountryController;
 use App\Http\Controllers\Designation\DesignationController;
 use App\Http\Controllers\FeatureRequest\FeatureRequestController;
+use App\Http\Controllers\ShareValue\ShareValueController;
 use App\Http\Controllers\Submission\SubmissionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +38,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
     Route::prefix('designations')->name('designations.')->group(function () {
         Route::get('/', [DesignationController::class, 'index'])->name('index');
+    });
+
+    Route::prefix('share-values')->name('share-values.')->group(function () {
+        Route::get('/', [ShareValueController::class, 'index'])->name('index');
     });
 
 });
