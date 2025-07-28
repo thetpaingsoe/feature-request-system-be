@@ -5,42 +5,37 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import {  MessageSquareText } from 'lucide-vue-next';
+import {   MapPinned, CircleDollarSign, Building, LayoutDashboard, ListTree } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: '/dashboard',
-        icon: MessageSquareText,
+        icon: LayoutDashboard,
     },
     {
         title: 'Submissions',
         href: '/submissions',
-        icon: MessageSquareText,
-    },
-    // {
-    //     title: 'Feature Requests',
-    //     href: '/feature-requests',
-    //     icon: MessageSquareText,
-    // },
+        icon: Building,
+    }
 ];
 
 const configNavItems: NavItem[] = [
     {
-        title: 'Company Designations',
+        title: 'Designations',
         href: '/company-designations',
-        icon: MessageSquareText,
+        icon: ListTree,
     },
     {
         title: 'Countries',
         href: '/countries',
-        icon: MessageSquareText,
+        icon: MapPinned,
     },
     {
         title: 'Share Values',
         href: '/share-values',
-        icon: MessageSquareText,
+        icon: CircleDollarSign,
     }
 ];
 

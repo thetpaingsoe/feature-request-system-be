@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Country\CountryController;
 use App\Http\Controllers\FeatureRequest\FeatureRequestController;
 use App\Http\Controllers\Submission\SubmissionController;
 use Illuminate\Support\Facades\Route;
@@ -26,7 +27,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::get('/', [SubmissionController::class, 'index'])->name('index');
         Route::get('/{id}/edit', [SubmissionController::class, 'edit'])->name('edit');
         Route::put('/{id}', [SubmissionController::class, 'updateStatus'])->name('update-status');
-        // Route::delete('/{id}', [SubmissionController::class, 'destroy'])->name('destroy');
+        Route::delete('/{id}', [SubmissionController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('countries')->name('countries.')->group(function () {
+        Route::get('/', [CountryController::class, 'index'])->name('index');
     });
 
 });

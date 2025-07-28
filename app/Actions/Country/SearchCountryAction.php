@@ -12,13 +12,13 @@ class SearchCountryAction
         protected CountryService $countryService
     ) {}
 
-    public function handle($request)
+    public function handle($request, $per_page = 50)
     {
         try {
             $filters = $request->only(['search']);
             $sorting = $request->only(['sort_by', 'sort_direction']);
             $page = $request->input('page', 1);
-            $perPage = $request->input('per_page', 50);
+            $perPage = $request->input('per_page', $per_page);
 
             $countries = $this->countryService->search($filters, $sorting, $page, $perPage);
 
