@@ -172,9 +172,10 @@ onMounted(() => {
                             <hr class="mt-4"/>
                             <RHeadingSmall title="Company Name" :description="submission.company_name" class="mt-4"/>
                             <RHeadingSmall title="Alternative Company Name" :description="submission.alternative_company_name ?? ''" class="mt-4"/>
+                            <RHeadingSmall title="Company designation" :description="submission.company_designation?.name ?? ''" class="mt-4"/>
                             <RHeadingSmall title="Jurisdiction of Operation" :description="submission.jurisdiction_of_operation?.name ?? ''" class="mt-4"/>
                             <RHeadingSmall
-                                title="Jurisdiction of Operation"
+                                title="Target Jurisdictions"
                                 :description="submission.target_jurisdiction_names?.map(j => j.name).join(', ') ?? ''"
                                 class="mt-4"
                             />

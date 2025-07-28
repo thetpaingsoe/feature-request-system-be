@@ -100,7 +100,7 @@ class SubmissionLogService
 
         $log = (object) [
             'submission_id' => $submissionId,
-            'type' => SubmissionLogTypes::Create,
+            'type' => SubmissionLogTypes::Update,
             'data' => $data,
         ];
 
