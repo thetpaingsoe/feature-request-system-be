@@ -16,9 +16,9 @@ import {
 } from '@tanstack/vue-table';
 
 import { 
-    Country, 
-    CountryPagination, 
-} from '@/types/country';
+    Designation, 
+    DesignationPagination, 
+} from '@/types/designation';
 
 import {
     Dialog,
@@ -37,8 +37,8 @@ import { InertiaFilters, InertiaSorting } from '@/types/submissions';
 // --- Breadcumb ---
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Countries',
-        href: '/countries',
+        title: 'Designations',
+        href: '/designations',
     }
 ];
 
@@ -47,13 +47,13 @@ const pageSizes: number[] = [10, 20, 50, 100];
 
 // --- Handling Props ---
 const props = defineProps<{
-  countriesPagination: CountryPagination; 
+  companyDesignationsPagination: DesignationPagination; 
   filters: InertiaFilters; 
   sorting: InertiaSorting; 
 }>();
 
-const countriesPagination = computed(() => props.countriesPagination ?? []);
-const countries = ref<Country[]>(props.countriesPagination ? props.countriesPagination.data : []); // Use the 'data' array from the pagination prop
+const companyDesignationsPagination = computed(() => props.companyDesignationsPagination ?? []);
+const companyDesignations = ref<Designation[]>(props.companyDesignationsPagination ? props.companyDesignationsPagination.data : []); // Use the 'data' array from the pagination prop
 
 // --- Table State ---
 const filterTypeData = props.filters ?? ref<any[]>([]);
@@ -70,14 +70,14 @@ onMounted(() => {
 })
 
 const pagination = ref({
-    pageIndex: countriesPagination.value.current_page - 1, // Initialize from props (0-indexed)
-    pageSize: countriesPagination.value.per_page, // Initialize from props
+    pageIndex: companyDesignationsPagination.value.current_page - 1, // Initialize from props (0-indexed)
+    pageSize: companyDesignationsPagination.value.per_page, // Initialize from props
 });
 
 // --- Update table data when there is changes ---
-watch(() => props.countriesPagination, (newCountriesData) => {        
-  countries.value = newCountriesData ? newCountriesData.data : [];
-  pagination.value.pageIndex = newCountriesData ? newCountriesData.current_page : 1;
+watch(() => props.companyDesignationsPagination, (newCompanyDesignationsData) => {        
+  companyDesignations.value = newCompanyDesignationsData ? newCompanyDesignationsData.data : [];
+  pagination.value.pageIndex = newCompanyDesignationsData ? newCompanyDesignationsData.current_page : 1;
 }, { deep: true, immediate: true }); 
  
 // --- Intertia Request ---
@@ -105,12 +105,12 @@ const triggerInertiaVisit = (options?: { resetPageIndex?: boolean; newPageIndex?
         params.sort_direction = sortDirection;
     }
 
-    router.get(route('countries.index'), params,
+    router.get(route('designations.index'), params,
     {
         preserveState: true,
         preserveScroll: true,
         replace: true,
-        only: ['countriesPagination', 'filters', 'sorting', 'flash'],
+        only: ['companyDesignationsPagination', 'filters', 'sorting', 'flash'],
     }
 )};
 
@@ -162,11 +162,11 @@ watch(dateFilter, () => {
 // @todo --- Action Handlers ---
 // const handleEdit = (id: number): void => {
   
-// //   router.get(route('countries.edit', { id: id }));
+// //   router.get(route('companyDesignations.edit', { id: id }));
 // };
 
 const isDeleteDialogOpen = ref(false);
-const countryNameToDelete = ref<string>('');
+const designationNameToDelete = ref<string>('');
 
 const form = useForm({
     id: 0,
@@ -211,7 +211,7 @@ const closeModal = () => {
 };
 
 // --- Column Helper For Table ---
-const columnHelper = createColumnHelper<Country>();
+const columnHelper = createColumnHelper<Designation>();
 
 const columns = [
   columnHelper.accessor('id', {
@@ -227,27 +227,21 @@ const columns = [
     enableSorting: true,
     enableGlobalFilter: true,
   }),
-  columnHelper.accessor('code', {
-    header: 'Code',
-    cell: info => info.getValue(),
-    enableSorting: true,
-    enableGlobalFilter: true,
-  }),
   columnHelper.display({ 
     id: 'actions',
     header: 'Actions',
-    cell: ({  }) => { //row
+    cell: ({  }) => {//row
     //   const item = row.original; // Get the original data object for the row
       return h('div', { class: 'flex space-x-2' }, [
         h('button', {
           class: 'cursor-not-allowed  px-3 py-1 bg-blue-500 dark:bg-blue-800 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-900 transition duration-150 ease-in-out text-sm',
-          onClick: () => {} //handleEdit(item.id),
+          onClick: () => {} // handleEdit(item.id),
         }, 'Edit'),
         h('button', {
           class: ' cursor-not-allowed px-3 py-1 bg-red-500 dark:bg-red-800 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-900 transition duration-150 ease-in-out text-sm',
           onClick: () => {
             
-            // countryNameToDelete.value = item.name; 
+            // designationNameToDelete.value = item.name; 
             // form.id = item.id
             
             // isDeleteDialogOpen.value = true; 
@@ -260,8 +254,8 @@ const columns = [
 ]
 
 // --- Table Instance ---
-const table = useVueTable<Country>({
-    get data() { return countries.value; },
+const table = useVueTable<Designation>({
+    get data() { return companyDesignations.value; },
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(), 
@@ -404,28 +398,28 @@ const table = useVueTable<Country>({
                 <div class="flex items-center space-x-2">
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: 1 })"
-                        :disabled="countriesPagination.current_page === 1"
+                        :disabled="companyDesignationsPagination.current_page === 1"
                         class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         First
                     </button>
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex - 1 })"
-                        :disabled="countriesPagination.current_page === 1"
+                        :disabled="companyDesignationsPagination.current_page === 1"
                         class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Previous
                     </button>
                     <button
                         @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex + 1 })"
-                        :disabled="countriesPagination.current_page === countriesPagination.last_page"             
+                        :disabled="companyDesignationsPagination.current_page === companyDesignationsPagination.last_page"             
                         class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Next
                     </button>
                     <button
-                        @click="triggerInertiaVisit({ newPageIndex: countriesPagination.last_page })"
-                        :disabled="countriesPagination.current_page === countriesPagination.last_page"
+                        @click="triggerInertiaVisit({ newPageIndex: companyDesignationsPagination.last_page })"
+                        :disabled="companyDesignationsPagination.current_page === companyDesignationsPagination.last_page"
                         class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white border-gray-300  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Last
@@ -435,7 +429,7 @@ const table = useVueTable<Country>({
                 <div class="flex items-center space-x-2 text-sm text-gray-700">
                     <span>Page</span>
                     <strong>
-                        {{ countriesPagination.current_page }} of {{ countriesPagination.last_page }}
+                        {{ companyDesignationsPagination.current_page }} of {{ companyDesignationsPagination.last_page }}
                     </strong>
                 </div>
 
@@ -445,7 +439,7 @@ const table = useVueTable<Country>({
                         type="number"
                         :value=" pagination.pageIndex "                        
                         @change="e => {
-                            const newPage = Math.max(1, Math.min(countriesPagination.last_page, Number((e.target as HTMLInputElement).value)));
+                            const newPage = Math.max(1, Math.min(companyDesignationsPagination.last_page, Number((e.target as HTMLInputElement).value)));
                             triggerInertiaVisit({ newPageIndex: newPage });
                         }"
                         class="w-20 px-3 py-1 border border-gray-300 dark:border-gray-800 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
@@ -466,9 +460,9 @@ const table = useVueTable<Country>({
                     <!-- @submit="handleDelete" -->
                     <form class="space-y-6" >
                         <DialogHeader class="space-y-3">
-                            <DialogTitle class=" text-lg/8">Are you sure you want to delete <br />"{{ countryNameToDelete }}"?</DialogTitle>
+                            <DialogTitle class=" text-lg/8">Are you sure you want to delete <br />"{{ designationNameToDelete }}"?</DialogTitle>
                             <DialogDescription>
-                                Once after deleted the country, you can't able to do the recovery.
+                                Once after deleted the designation, you can't able to do the recovery.
                             </DialogDescription>
                         </DialogHeader>
 

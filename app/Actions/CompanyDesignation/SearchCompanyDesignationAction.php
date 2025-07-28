@@ -12,13 +12,13 @@ class SearchCompanyDesignationAction
         protected CompanyDesignationService $companyDesignationService
     ) {}
 
-    public function handle($request)
+    public function handle($request, $per_page = 50)
     {
         try {
             $filters = $request->only(['search']);
             $sorting = $request->only(['sort_by', 'sort_direction']);
             $page = $request->input('page', 1);
-            $perPage = $request->input('per_page', 50);
+            $perPage = $request->input('per_page', $per_page);
 
             $companyDesignations = $this->companyDesignationService->search($filters, $sorting, $page, $perPage);
 

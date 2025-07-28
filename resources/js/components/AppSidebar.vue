@@ -24,7 +24,7 @@ const mainNavItems: NavItem[] = [
 const configNavItems: NavItem[] = [
     {
         title: 'Designations',
-        href: '/company-designations',
+        href: '/designations',
         icon: ListTree,
     },
     {

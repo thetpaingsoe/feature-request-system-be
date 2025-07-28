@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Country\CountryController;
+use App\Http\Controllers\Designation\DesignationController;
 use App\Http\Controllers\FeatureRequest\FeatureRequestController;
 use App\Http\Controllers\Submission\SubmissionController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
     Route::prefix('countries')->name('countries.')->group(function () {
         Route::get('/', [CountryController::class, 'index'])->name('index');
+    });
+
+    Route::prefix('designations')->name('designations.')->group(function () {
+        Route::get('/', [DesignationController::class, 'index'])->name('index');
     });
 
 });
