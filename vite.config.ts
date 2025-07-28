@@ -6,8 +6,9 @@ import { loadEnv } from 'vite';
 
 export default ({ mode }) => {
     const env = loadEnv(mode, process.cwd());    
+    
     return ({
-    base: env.APP_ENV == 'production' ? '/public/build/' : '',
+    base: env.VITE_APP_ENV == 'production' ? '/public/build/' : '',
     plugins: [
         laravel({
             input: ['resources/js/app.ts'],

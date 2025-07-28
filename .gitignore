@@ -6,6 +6,8 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/public/*.DS_STORE
+*.DS_Store
 /vendor
 # .env # Intentionally ignored this .env file to make it easier to setup.
 .env.backup
