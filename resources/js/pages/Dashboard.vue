@@ -119,12 +119,6 @@ const triggerInertiaVisit = (options?: { resetPageIndex?: boolean; newPageIndex?
     }
 )};
 
-// -- Filter Sections --
-// const filterSection = ref(false);
-// function toggleFilterSection() {
-//     filterSection.value = !filterSection.value;
-// }
-
 // --- Keyword Search ---
 watch(
     globalFilter,
@@ -157,58 +151,13 @@ watch(dateFilter, () => {
         triggerInertiaVisit({ resetPageIndex: true });
     }
 });
-// function dateFilterCleared() {
-//     dateFilter.value = [];
-//     dateFilterStart.value = "";
-//     dateFilterEnd.value = "";
-//     triggerInertiaVisit({ resetPageIndex: true });
-// }
-
-// @todo --- Action Handlers ---
-// const handleEdit = (id: number): void => {
-  
-// //   router.get(route('submissionLogs.edit', { id: id }));
-// };
-
 const isDeleteDialogOpen = ref(false);
 const countryNameToDelete = ref<string>('');
 
 const form = useForm({
     id: 0,
 });
-// const handleDelete = (e: Event) => {
-    // e.preventDefault();
 
-    // const sortBy = sortingRef.value.length > 0 ? sortingRef.value[0].id : null;
-    // const sortDirection = sortingRef.value.length > 0 ? (sortingRef.value[0].desc ? 'desc' : 'asc') : null;
-    
-    // const params: Record<string, any> = {
-    //     page: pagination.value.pageIndex , // Page and per_page are always sent
-    //     per_page: pagination.value.pageSize,
-    // };
-
-    // if (globalFilter.value) params.search = globalFilter.value;
-    // if (selectedStatus.value !== 'All') params.status = selectedStatus.value;
-    // if (dateFilterStart.value) params.date_start = dateFilterStart.value;
-    // if (dateFilterEnd.value) params.date_end = dateFilterEnd.value;
-    // if (sortBy) { 
-    //     params.sort_by = sortBy;
-    //     params.sort_direction = sortDirection;
-    // }
-
-    // form.delete(route('counties.destroy', { id: form.id, ...params }), {
-    //     preserveScroll: true,
-    //     onSuccess: () => closeModal(),
-    //     onError: () => {
-    //         isDeleteDialogOpen.value = false;
-    //         // alert("Error on delete.");            
-    //     },
-    //     onFinish: () => { 
-    //         form.reset();
-    //         isDeleteDialogOpen.value = false;
-    //     }
-    // });
-// };
 const closeModal = () => {
     form.clearErrors();
     form.reset();
@@ -336,14 +285,14 @@ const columns = [
     cell: info => {
       const value = info.getValue(); // Get the raw value (string, null, or undefined)
       if (value === null || value === undefined) {
-        return '-'; // Or an empty string '' if you prefer
+        return ''; // Or an empty string '' if you prefer
       }
 
       const stringValue = String(value); // Ensure it's treated as a string
       const maxLength = 25; // Define your max length
 
       if (stringValue.length > maxLength) {
-        return stringValue.slice(0, maxLength) + '...'; // Truncate and add ellipsis
+        return stringValue.slice(0, maxLength) + ' ...'; // Truncate and add ellipsis
       }
       return stringValue; // Return as is if shorter or equal
     },
@@ -419,17 +368,7 @@ function handleCellClick(id :string) {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <!-- <div class="grid auto-rows-min gap-4 md:grid-cols-3 h-32">
-                <div class="h-32 relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="h-32 relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="h-32 relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-            </div> -->
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-4">
                 <div class="bg-background rounded-xl shadow-lg hover:shadow-xl transition-shadow 
                 duration-300 overflow-hidden border border-primary-light/25 cursor-pointer
@@ -496,201 +435,181 @@ function handleCellClick(id :string) {
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                 <!-- <PlaceholderPattern /> -->
                  <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto ">
-                
-                
                     <p class="ms-2 font-bold">Lastest Activities</p>
-                <!-- Filters Section -->
-                <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2"> -->
-                    
-                    <!-- Keyword Search -->         
-                    <!-- <div>
-                        <label for="global-search" class="block text-sm font-medium text-gray-700 mb-1">Keyword Search</label>
-                        <div class="flex flex-row">
-                            <input
-                                id="global-search"
-                                type="text"
-                                v-model="globalFilter"
-                                placeholder="Search name, id ..."
-                                class="w-full px-4 py-2 border dark:border-gray-800 rounded-md focus:outline-none transition duration-150 ease-in-out"
-                            />
-                            
-                        </div>
-                    </div>-->
-                <!-- </div>  -->
-                
-                <!-- Table Container -->
-                <div class="overflow-x-auto rounded-lg border dark:border-gray-900 mt-2">
-                    <table class="min-w-full divide-y dark:divide-gray-900">
-                        <thead class="">
-                            <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-                                <th
-                                    v-for="header in headerGroup.headers"
-                                    :key="header.id"
-                                    :colSpan="header.colSpan"
-                                    :class="{
-                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider': true,
-                                        'cursor-pointer select-none': header.column.getCanSort(),
-                                        'hover:dark:bg-gray-900 hover:bg-gray-100': header.column.getCanSort(),
-                                    }"
-                                    @click="header.column.getToggleSortingHandler()?.($event)"
-                                >
-                                <div class="flex items-center space-x-1">
-                                    <template v-if="!header.isPlaceholder">
+               
+                    <!-- Table Container -->
+                    <div class="overflow-x-auto rounded-lg border dark:border-gray-900 mt-2">
+                        <table class="min-w-full divide-y dark:divide-gray-900">
+                            <thead class="">
+                                <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+                                    <th
+                                        v-for="header in headerGroup.headers"
+                                        :key="header.id"
+                                        :colSpan="header.colSpan"
+                                        :class="{
+                                            'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider': true,
+                                            'cursor-pointer select-none': header.column.getCanSort(),
+                                            'hover:dark:bg-gray-900 hover:bg-gray-100': header.column.getCanSort(),
+                                        }"
+                                        @click="header.column.getToggleSortingHandler()?.($event)"
+                                    >
+                                    <div class="flex items-center space-x-1">
+                                        <template v-if="!header.isPlaceholder">
+                                            <FlexRender
+                                                v-if="!header.isPlaceholder"
+                                                :render="header.column.columnDef.header"
+                                                :props="header.getContext()"
+                                                />
+                                            <span v-if="header.column.getIsSorted() === 'asc'">
+                                                <svg
+                                                    class="w-4 h-4 text-gray-400"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                                </svg>
+                                            </span>
+                                            <span v-else-if="header.column.getIsSorted() === 'desc'">
+                                                <svg
+                                                    class="w-4 h-4 text-gray-400"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </span>
+                                            <span v-else>
+                                                <svg
+                                                    class="w-4 h-4 text-gray-300"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                                                </svg>
+                                            </span>
+                                        </template>
+                                    </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class=" divide-y dark:divide-gray-800">
+                                <tr v-if="table.getRowModel().rows.length === 0">
+                                    <td :colspan="columns.length" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                                        No Data found matching your criteria.
+                                    </td>
+                                </tr>
+                                <tr v-for="row in table.getRowModel().rows" :key="row.id" 
+                                    class="cursor-pointer dark:hover:bg-gray-900 hover:bg-gray-100"
+                                    @click="handleCellClick(row.original.submission_id)">
+                                    <td
+                                        v-for="cell in row.getVisibleCells()"
+                                        :key="cell.id"
+                                        class="px-6 py-4 whitespace-nowrap text-sm " 
+                                    >
+                                    <Label class="cursor-pointer" >
+                                        <!-- Use FlexRender for cell content -->
                                         <FlexRender
-                                            v-if="!header.isPlaceholder"
-                                            :render="header.column.columnDef.header"
-                                            :props="header.getContext()"
-                                            />
-                                        <span v-if="header.column.getIsSorted() === 'asc'">
-                                            <svg
-                                                class="w-4 h-4 text-gray-400"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-                                            </svg>
-                                        </span>
-                                        <span v-else-if="header.column.getIsSorted() === 'desc'">
-                                            <svg
-                                                class="w-4 h-4 text-gray-400"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                            </svg>
-                                        </span>
-                                        <span v-else>
-                                            <svg
-                                                class="w-4 h-4 text-gray-300"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
-                                            </svg>
-                                        </span>
-                                    </template>
-                                </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class=" divide-y dark:divide-gray-800">
-                            <tr v-if="table.getRowModel().rows.length === 0">
-                                <td :colspan="columns.length" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
-                                    No Data found matching your criteria.
-                                </td>
-                            </tr>
-                            <tr v-for="row in table.getRowModel().rows" :key="row.id" 
-                                class="cursor-pointer dark:hover:bg-gray-900 hover:bg-gray-100"
-                                @click="handleCellClick(row.original.submission_id)">
-                                <td
-                                    v-for="cell in row.getVisibleCells()"
-                                    :key="cell.id"
-                                    class="px-6 py-4 whitespace-nowrap text-sm " 
-                                >
-                                <Label class="cursor-pointer" >
-                                    <!-- Use FlexRender for cell content -->
-                                    <FlexRender
-                                        :render="cell.column.columnDef.cell"
-                                        :props="cell.getContext()"
-                                    />
-                                </Label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                            :render="cell.column.columnDef.cell"
+                                            :props="cell.getContext()"
+                                        />
+                                    </Label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    <div class="mt-6 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+                        <div class="flex items-center space-x-2">
+                            <button
+                                @click="triggerInertiaVisit({ newPageIndex: 1 })"
+                                :disabled="submissionLogsPagination.current_page === 1"
+                                class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                First
+                            </button>
+                            <button
+                                @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex - 1 })"
+                                :disabled="submissionLogsPagination.current_page === 1"
+                                class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Previous
+                            </button>
+                            <button
+                                @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex + 1 })"
+                                :disabled="submissionLogsPagination.current_page === submissionLogsPagination.last_page"             
+                                class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Next
+                            </button>
+                            <button
+                                @click="triggerInertiaVisit({ newPageIndex: submissionLogsPagination.last_page })"
+                                :disabled="submissionLogsPagination.current_page === submissionLogsPagination.last_page"
+                                class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white border-gray-300  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Last
+                            </button>
+                        </div>
+
+                        <div class="flex items-center space-x-2 text-sm text-gray-700">
+                            <span>Page</span>
+                            <strong>
+                                {{ submissionLogsPagination.current_page }} of {{ submissionLogsPagination.last_page }}
+                            </strong>
+                        </div>
+
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-700">Go to page:</span>
+                            <input
+                                type="number"
+                                :value=" pagination.pageIndex "                        
+                                @change="e => {
+                                    const newPage = Math.max(1, Math.min(submissionLogsPagination.last_page, Number((e.target as HTMLInputElement).value)));
+                                    triggerInertiaVisit({ newPageIndex: newPage });
+                                }"
+                                class="w-20 px-3 py-1 border border-gray-300 dark:border-gray-800 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <select
+                                v-model="pagination.pageSize"
+                                @change="triggerInertiaVisit({ resetPageIndex: true })"
+                                class="px-3 py-1 border border-gray-300 dark:border-gray-800 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option v-for="size in pageSizes" :key="size" :value="size">Show {{ size }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Delete Confirmation Dialog -->
+                    <Dialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
+                        <DialogContent>
+                            <!-- @submit="handleDelete" -->
+                            <form class="space-y-6" >
+                                <DialogHeader class="space-y-3">
+                                    <DialogTitle class=" text-lg/8">Are you sure you want to delete <br />"{{ countryNameToDelete }}"?</DialogTitle>
+                                    <DialogDescription>
+                                        Once after deleted the country, you can't able to do the recovery.
+                                    </DialogDescription>
+                                </DialogHeader>
+
+
+                                <DialogFooter class="gap-2">
+                                    <DialogClose as-child>
+                                        <Button variant="secondary" @click="closeModal"> Cancel </Button>
+                                    </DialogClose>
+
+                                    <Button type="submit" variant="destructive" :disabled="form.processing"> Delete Request </Button>
+                                </DialogFooter>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
-
-                <!-- Pagination Controls -->
-                <div class="mt-6 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-                    <div class="flex items-center space-x-2">
-                        <button
-                            @click="triggerInertiaVisit({ newPageIndex: 1 })"
-                            :disabled="submissionLogsPagination.current_page === 1"
-                            class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            First
-                        </button>
-                        <button
-                            @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex - 1 })"
-                            :disabled="submissionLogsPagination.current_page === 1"
-                            class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Previous
-                        </button>
-                        <button
-                            @click="triggerInertiaVisit({ newPageIndex: pagination.pageIndex + 1 })"
-                            :disabled="submissionLogsPagination.current_page === submissionLogsPagination.last_page"             
-                            class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Next
-                        </button>
-                        <button
-                            @click="triggerInertiaVisit({ newPageIndex: submissionLogsPagination.last_page })"
-                            :disabled="submissionLogsPagination.current_page === submissionLogsPagination.last_page"
-                            class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 dark:text-white bg-white border-gray-300  dark:bg-gray-700 dark:border-gray-800 hover:bg-gray-50 hover:dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Last
-                        </button>
-                    </div>
-
-                    <div class="flex items-center space-x-2 text-sm text-gray-700">
-                        <span>Page</span>
-                        <strong>
-                            {{ submissionLogsPagination.current_page }} of {{ submissionLogsPagination.last_page }}
-                        </strong>
-                    </div>
-
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-700">Go to page:</span>
-                        <input
-                            type="number"
-                            :value=" pagination.pageIndex "                        
-                            @change="e => {
-                                const newPage = Math.max(1, Math.min(submissionLogsPagination.last_page, Number((e.target as HTMLInputElement).value)));
-                                triggerInertiaVisit({ newPageIndex: newPage });
-                            }"
-                            class="w-20 px-3 py-1 border border-gray-300 dark:border-gray-800 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
-                        />
-                        <select
-                            v-model="pagination.pageSize"
-                            @change="triggerInertiaVisit({ resetPageIndex: true })"
-                            class="px-3 py-1 border border-gray-300 dark:border-gray-800 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
-                        >
-                            <option v-for="size in pageSizes" :key="size" :value="size">Show {{ size }}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Delete Confirmation Dialog -->
-                <Dialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
-                    <DialogContent>
-                        <!-- @submit="handleDelete" -->
-                        <form class="space-y-6" >
-                            <DialogHeader class="space-y-3">
-                                <DialogTitle class=" text-lg/8">Are you sure you want to delete <br />"{{ countryNameToDelete }}"?</DialogTitle>
-                                <DialogDescription>
-                                    Once after deleted the country, you can't able to do the recovery.
-                                </DialogDescription>
-                            </DialogHeader>
-
-
-                            <DialogFooter class="gap-2">
-                                <DialogClose as-child>
-                                    <Button variant="secondary" @click="closeModal"> Cancel </Button>
-                                </DialogClose>
-
-                                <Button type="submit" variant="destructive" :disabled="form.processing"> Delete Request </Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-            </div>
             </div>
         </div>
     </AppLayout>

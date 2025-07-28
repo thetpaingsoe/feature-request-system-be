@@ -5,11 +5,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { Submission } from '@/types/submissions';
 import { Button } from '@/components/ui/button';
-// import { TextArea } from '@/components/ui/textarea';
-// import { Input } from '@/components/ui/input';
-// import { Label } from '@/components/ui/label';
 import { LoaderCircle } from 'lucide-vue-next';
-// import HeadingSmall from '@/components/HeadingSmall.vue';
 import RHeadingSmall from '@/components/RHeadingSmall.vue';
 import { SubmissionLog, SubmissionLogPagination } from '@/types/submission-logs';
 import SubmissionLogUI from '@/components/SubmissionLogUI.vue';
@@ -42,16 +38,6 @@ const processing = ref(false);
 const currentStatus = ref<string>(props.submission ? props.submission.status : '');
 const currentNote = ref<string>('');
 const currentNoteError = ref<string>('');
-
-// --- Available Statuses (Fallback if not passed as prop) ---
-// const defaultAvailableStatuses = [
-//   'pending',
-//   'approved',
-//   'rejected',
-//   'reviewed'
-// ];
-
-// const statuses = computed(() =>  props.statuses ?? defaultAvailableStatuses);
 
 // --- Breadcrumbs ---
 const breadcrumbs: BreadcrumbItem[] = [
@@ -105,32 +91,14 @@ const handleStatusChange = (options?: { status?: string}) => {
         {
             preserveScroll: true,
             preserveState: false,
-            onSuccess: () => {
-                // processing.value = false;
-                // alert('Submission updated successfully!'); 
-                // router.reload()
+            onSuccess: () => {                
             },
             onError: (errors) => {
-                // processing.value = false;
                 console.error('Error updating submission:', errors);
-                // alert('Failed to update submission. Check console for details.'); // Replace with proper error display
             },
         }
     );
 };
-
-// // --- Cancel Logic ---
-// const handleCancel = () => {
-//   router.get(route('submissions.index'));
-// };
-
-// router.on('finish', (event) => {  
-//     if(col2Ref.value != null)
-//         console.log(col2Ref.value.scrollHeight);
-//     if (! event.detail.visit.url.toString().includes("preserveState") && col2Ref.value != null) {
-//         col2Ref.value.scrollTop = col2Ref.value.scrollHeight;
-//     }
-// });
 
 const col2Ref = ref<HTMLElement | null>(null);
 

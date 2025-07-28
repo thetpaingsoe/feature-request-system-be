@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -17,10 +18,12 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
     }
 
+    // Because of new permission, it will fail
     public function test_users_can_authenticate_using_the_login_screen()
     {
+        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $user = User::factory()->create();
-
+        $user->assignRole('admin');
         $response = $this->post('/login', [
             'email' => $user->email,
             'password' => 'password',

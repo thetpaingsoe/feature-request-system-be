@@ -284,10 +284,6 @@ const columns = [
     cell: ({ row }) => {
       const item = row.original; // Get the original data object for the row
       return h('div', { class: 'flex space-x-2' }, [
-        // h('button', {
-        //   class: 'px-3 py-1 bg-blue-500 dark:bg-blue-800 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-900 transition duration-150 ease-in-out text-sm',
-        //   onClick: () => handleEdit(item.id),
-        // }, 'Edit'),
         h('button', {
           class: 'px-3 py-1 bg-red-500 dark:bg-red-800 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-900 transition duration-150 ease-in-out text-sm',
           onClick: () => {
@@ -471,23 +467,14 @@ const table = useVueTable<Submission>({
                                 v-for="cell in row.getVisibleCells()"
                                 :key="cell.id"
                                 class="px-6 py-4 whitespace-nowrap text-sm " @click="handleEdit(row.original.id, cell.id)"
-                            >
-                            <!-- <div v-if="cell.id.includes('_actions')">
-                                <Label class="cursor-pointer">
-                                    
-                                    <FlexRender
-                                        :render="cell.column.columnDef.cell"
-                                        :props="cell.getContext()"/>
-                                </Label>
-                            </div>
-                            <div v-else > -->
+                            >                            
                                 <Label class="cursor-pointer">
                                     <!-- Use FlexRender for cell content -->
                                     <FlexRender
                                         :render="cell.column.columnDef.cell"
                                         :props="cell.getContext()"/>
                                 </Label>
-                            <!-- </div> -->
+                            
                             </td>
                         </tr>
                     </tbody>

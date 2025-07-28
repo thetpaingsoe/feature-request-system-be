@@ -22,7 +22,7 @@ class SubmissionLogApiController extends Controller
 
             return response()->json($this->searchSubmissionLogAction->handle($request, $id), 200);
         } catch (Throwable $e) {
-            Log::error('SubmissionApiController::search : '.$e->getMessage(), ['exception' => $e]);
+            Log::error('SubmissionLogApiController::search : '.$e->getMessage(), ['exception' => $e]);
 
             return response()->json([
                 'message' => 'An unexpected server error occurred. Please try again later.',

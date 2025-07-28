@@ -32,8 +32,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { InertiaFilters, InertiaSorting } from '@/types/submissions';
 
-
-
 // --- Breadcumb ---
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -114,12 +112,6 @@ const triggerInertiaVisit = (options?: { resetPageIndex?: boolean; newPageIndex?
     }
 )};
 
-// -- Filter Sections --
-// const filterSection = ref(false);
-// function toggleFilterSection() {
-//     filterSection.value = !filterSection.value;
-// }
-
 // --- Keyword Search ---
 watch(
     globalFilter,
@@ -152,18 +144,6 @@ watch(dateFilter, () => {
         triggerInertiaVisit({ resetPageIndex: true });
     }
 });
-// function dateFilterCleared() {
-//     dateFilter.value = [];
-//     dateFilterStart.value = "";
-//     dateFilterEnd.value = "";
-//     triggerInertiaVisit({ resetPageIndex: true });
-// }
-
-// @todo --- Action Handlers ---
-// const handleEdit = (id: number): void => {
-  
-// //   router.get(route('companyDesignations.edit', { id: id }));
-// };
 
 const isDeleteDialogOpen = ref(false);
 const designationNameToDelete = ref<string>('');
@@ -171,39 +151,7 @@ const designationNameToDelete = ref<string>('');
 const form = useForm({
     id: 0,
 });
-// const handleDelete = (e: Event) => {
-    // e.preventDefault();
 
-    // const sortBy = sortingRef.value.length > 0 ? sortingRef.value[0].id : null;
-    // const sortDirection = sortingRef.value.length > 0 ? (sortingRef.value[0].desc ? 'desc' : 'asc') : null;
-    
-    // const params: Record<string, any> = {
-    //     page: pagination.value.pageIndex , // Page and per_page are always sent
-    //     per_page: pagination.value.pageSize,
-    // };
-
-    // if (globalFilter.value) params.search = globalFilter.value;
-    // if (selectedStatus.value !== 'All') params.status = selectedStatus.value;
-    // if (dateFilterStart.value) params.date_start = dateFilterStart.value;
-    // if (dateFilterEnd.value) params.date_end = dateFilterEnd.value;
-    // if (sortBy) { 
-    //     params.sort_by = sortBy;
-    //     params.sort_direction = sortDirection;
-    // }
-
-    // form.delete(route('counties.destroy', { id: form.id, ...params }), {
-    //     preserveScroll: true,
-    //     onSuccess: () => closeModal(),
-    //     onError: () => {
-    //         isDeleteDialogOpen.value = false;
-    //         // alert("Error on delete.");            
-    //     },
-    //     onFinish: () => { 
-    //         form.reset();
-    //         isDeleteDialogOpen.value = false;
-    //     }
-    // });
-// };
 const closeModal = () => {
     form.clearErrors();
     form.reset();
@@ -241,10 +189,6 @@ const columns = [
           class: ' cursor-not-allowed px-3 py-1 bg-red-500 dark:bg-red-800 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-900 transition duration-150 ease-in-out text-sm',
           onClick: () => {
             
-            // designationNameToDelete.value = item.name; 
-            // form.id = item.id
-            
-            // isDeleteDialogOpen.value = true; 
           },
         }, 'Delete'),
       ]);
