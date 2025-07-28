@@ -13,6 +13,8 @@ class SubmissionSeeder extends Seeder
 {
     public function run(): void
     {
+        $faker = \Faker\Factory::create();
+
         // Create a user if not exists
         $user = User::firstOrCreate(
             ['email' => 'user1@gmail.com'],
@@ -35,49 +37,47 @@ class SubmissionSeeder extends Seeder
         for ($i = 1; $i <= 5; $i++) {
             Submission::create([
                 'user_id' => $user->id,
-                'full_name' => "Applicant $i",
-                'email' => "applicant$i@example.com",
-                'company_name' => "Company $i",
-                'alternative_company_name' => "Alt Co $i",
+                'full_name' => $faker->name,
+                'email' => $faker->email,
+                'company_name' => $faker->company,
+                'alternative_company_name' => $faker->company,
                 'company_designation_id' => $designations->random()->id,
                 'jurisdiction_of_operation_id' => $countries->random()->id,
                 'target_jurisdictions' => $countries->random(3)->pluck('id')->toArray(),
                 'number_of_shares' => rand(1000, 10000),
-                'are_all_shares_issued' => (bool) rand(0, 1),
+                'are_all_shares_issued' => 0,
                 'number_of_issued_shares' => rand(100, 9000),
                 'share_value_id' => $shareValues->random()->id,
                 'shareholders' => [
                     [
-                        'name' => 'John Doe',
-                        'email' => 'john@example.com',
+                        'name' => $faker->name,
+                        'email' => $faker->email,
                         'percentage' => 60,
                     ],
                     [
-                        'name' => 'Jane Smith',
-                        'email' => 'jane@example.com',
+                        'name' => $faker->name,
+                        'email' => $faker->email,
                         'percentage' => 40,
                     ],
                 ],
                 'beneficial_owners' => [
                     [
-                        'name' => 'Emily Doe',
-                        'relationship' => 'Spouse',
+                        'name' => $faker->name,
+                        'email' => $faker->email,
                     ],
                     [
-                        'name' => 'Richard Roe',
-                        'relationship' => 'Child',
+                        'name' => $faker->name,
+                        'email' => $faker->email,
                     ],
                 ],
                 'directors' => [
                     [
-                        'name' => 'Mark Lee',
-                        'position' => 'CEO',
-                        'email' => 'mark@company.com',
+                        'name' => $faker->name,
+                        'email' => $faker->email,
                     ],
                     [
-                        'name' => 'Lisa Chan',
-                        'position' => 'CFO',
-                        'email' => 'lisa@company.com',
+                        'name' => $faker->name,
+                        'email' => $faker->email,
                     ],
                 ],
                 'status' => 'pending',
