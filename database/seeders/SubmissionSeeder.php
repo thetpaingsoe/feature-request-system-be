@@ -34,7 +34,7 @@ class SubmissionSeeder extends Seeder
             return;
         }
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             Submission::create([
                 'user_id' => $user->id,
                 'full_name' => $faker->name,
@@ -44,9 +44,9 @@ class SubmissionSeeder extends Seeder
                 'company_designation_id' => $designations->random()->id,
                 'jurisdiction_of_operation_id' => $countries->random()->id,
                 'target_jurisdictions' => $countries->random(3)->pluck('id')->toArray(),
-                'number_of_shares' => rand(1000, 10000),
+                'number_of_shares' => rand(90000, 10000),
                 'are_all_shares_issued' => 0,
-                'number_of_issued_shares' => rand(100, 9000),
+                'number_of_issued_shares' => rand(40000, 80000),
                 'share_value_id' => $shareValues->random()->id,
                 'shareholders' => [
                     [

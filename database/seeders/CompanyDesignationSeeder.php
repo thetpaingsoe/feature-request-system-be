@@ -10,15 +10,14 @@ class CompanyDesignationSeeder extends Seeder
     public function run(): void
     {
         $designations = [
-            'CEO (Chief Executive Officer)',
-            'CFO (Chief Financial Officer)',
-            'COO (Chief Operating Officer)',
-            'CIO (Chief Information Officer)',
-            'CMO (Chief Marketing Officer)',
-            'CTO (Chief Technology Officer)',
             'CHRO (Chief Human Resources Officer)',
             'CDO (Chief Data Officer)',
-            'Other'
+            'CMO (Chief Marketing Officer)',
+            'CIO (Chief Information Officer)',
+            'CTO (Chief Technology Officer)',
+            'COO (Chief Operating Officer)',
+            'CFO (Chief Financial Officer)',
+            'CEO (Chief Executive Officer)',
         ];
 
         foreach ($designations as $name) {
