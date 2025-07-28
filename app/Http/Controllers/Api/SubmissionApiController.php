@@ -6,9 +6,11 @@ use App\Actions\Submission\GetSubmissionAction;
 use App\Actions\Submission\SearchSubmissionAction;
 use App\Actions\Submission\StoreSubmissionAction;
 use App\Actions\Submission\UpdateSubmissionAction;
+use App\Actions\Submission\UpdateSubmissionStatusAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Submission\SubmissionStoreRequest;
 use App\Http\Requests\Submission\SubmissionUpdateRequest;
+use App\Http\Requests\SubmissionLog\SubmissionLogReplyRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -19,7 +21,8 @@ class SubmissionApiController extends Controller
         protected SearchSubmissionAction $searchSubmissionAction,
         protected StoreSubmissionAction $storeSubmissionAction,
         protected UpdateSubmissionAction $updateSubmissionAction,
-        protected GetSubmissionAction $getSubmissionAction
+        protected GetSubmissionAction $getSubmissionAction,
+        protected UpdateSubmissionStatusAction $updateSubmissionStatusAction
     ) {}
 
     public function search(Request $request)
@@ -68,6 +71,23 @@ class SubmissionApiController extends Controller
             return response()->json($this->updateSubmissionAction->handle($id, $request), 201);
         } catch (Throwable $e) {
             Log::error('SubmissionApiController::store : '.$e->getMessage(), ['exception' => $e]);
+
+            return response()->json([
+                'message' => 'An unexpected server error occurred. Please try again later.'.$e->getMessage(),
+            ], 500);
+        }
+
+    }
+
+    // Accept the suggestion
+    // Reject the suggestion
+    // Reply the suggestion
+    public function reply(SubmissionLogReplyRequest $request, $id)
+    {
+        try {
+            return response()->json($this->updateSubmissionStatusAction->handle($id, $request), 201);
+        } catch (Throwable $e) {
+            Log::error('SubmissionApiController::reply : '.$e->getMessage(), ['exception' => $e]);
 
             return response()->json([
                 'message' => 'An unexpected server error occurred. Please try again later.'.$e->getMessage(),

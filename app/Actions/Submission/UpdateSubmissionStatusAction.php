@@ -33,13 +33,16 @@ class UpdateSubmissionStatusAction
 
             $submission = $this->submissionService->get($id);
 
-            $data = [
-                'from' => $submission->status,
-                'to' => $validatedData['status'],
-            ];
-
-            $submission = $this->submissionService->updateStatus($submission, $validatedData['status']);
-
+            $data = [];
+            if (isset($validatedData['status'])) {
+                $data = [
+                    'from' => $submission->status,
+                    'to' => $validatedData['status'],
+                ];
+                if ($data['from'] != $data['to']) {
+                    $submission = $this->submissionService->updateStatus($submission, $validatedData['status']);
+                }
+            }
             $this->recordSubmissionLogAction->handle($request, $id, $data);
 
             DB::commit();

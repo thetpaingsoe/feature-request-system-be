@@ -23,11 +23,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', 'store');
         Route::get('/{id}', 'get');
         Route::put('/{id}', 'update');
+        Route::post('/reply/{submission_id}', 'reply');
     });
 
     Route::prefix('submission-logs')->controller(SubmissionLogApiController::class)->group(function () {
         Route::get('/{submission_id}', 'search');
-        Route::post('/{submission_id}/reply', 'reply');
     });
 
     Route::get('/countries', [CountryApiController::class, 'search']);

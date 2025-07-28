@@ -2,9 +2,9 @@
 
 namespace App\Actions\Submission;
 
+use App\Actions\SubmissionLog\RecordSubmissionLogAction;
 use App\DTOs\Submission\UpdateSubmissionDto;
 use App\Enums\SubmissionLogTypes;
-use App\Services\Submission\SubmissionLogService;
 use App\Services\Submission\SubmissionService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +14,7 @@ class UpdateSubmissionAction
 {
     public function __construct(
         protected SubmissionService $submissionService,
-        protected SubmissionLogService $submissionLogService
+        protected RecordSubmissionLogAction $recordSubmissionLogAction
     ) {}
 
     public function handle($id, $request)
@@ -30,17 +30,10 @@ class UpdateSubmissionAction
 
             $submission = $this->submissionService->update($id, $data, $userId);
 
-            $noteData = [
-                'user_id' => $userId,
-            ];
-
-            $log = (object) [
-                'submission_id' => $submission->id,
+            $params = [
                 'type' => SubmissionLogTypes::Update,
-                'data' => $noteData,
             ];
-
-            $this->submissionLogService->create($log);
+            $this->recordSubmissionLogAction->handle($request, $submission->id, $params);
 
             DB::commit();
 

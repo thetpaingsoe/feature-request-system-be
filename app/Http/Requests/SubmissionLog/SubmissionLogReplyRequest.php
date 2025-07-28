@@ -15,6 +15,8 @@ class SubmissionLogReplyRequest extends FormRequest
     {
         return [
             'note' => [],
+            'status' => [],
+            'action' => [],
         ];
     }
 }
